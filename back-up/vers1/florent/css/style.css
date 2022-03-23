@@ -1,0 +1,16 @@
+/* #check_create_post {
+    display: none !important;
+} */
+
+#input:not(checked) ~ .form-create-post {
+    display: none;
+    transition: 1s;
+}
+#input:checked ~ .form-create-post {
+    display: block;
+    transition: 1s;
+}
+
+li {
+    color: blue;
+}
