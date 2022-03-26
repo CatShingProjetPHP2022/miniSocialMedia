@@ -5,7 +5,6 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 //relier notre site à la database
 $pdo = new PDO('mysql:host=localhost;dbname=projet-php', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
-
 // On ouvre une session pour y stocker les infos utilisateurs
 session_start();
 
@@ -25,7 +24,7 @@ function followBefriend($input, $target) {
             // pour s'abonner il faut aller sur le compte de la personne auquel on veut s'abonner, il y a donc une requete pour
             // pour cet utilisateur sur lequel on a clique, on recup les infos de cette requette à la place du 2
         } else if ($input=="befriend") {
-            $pdo->exec("INSERT INTO friends_list (id_friend_1st, id_friend_2nd, accept  ) VALUES ('$userId_int', '$target', FALSE)");
+            $pdo->exec("INSERT INTO friends_list (id_user, id_friend, accept  ) VALUES ('$userId_int', '$target', FALSE)");
         }
     }
 

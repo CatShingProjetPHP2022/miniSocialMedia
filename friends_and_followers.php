@@ -15,13 +15,27 @@ session_start();
 
 <!-- il faudra sûrement le mettre dans une fonctions rangé dans functions.php qu'on va call -->
 <?php
-    if ($_POST) {
-        if ($_POST["follow_friend_request"]=="follow") {
-            $pdo->exec("INSERT INTO followed_list (id_user, id_followed) VALUES ('$_SESSION[user]', 2)");
-            // pour s'abonner il faut aller sur le compte de la personne auquel on veut s'abonner, il y a donc une requete pour
-            // pour cet utilisateur sur lequel on a clique, on recup les infos de cette requette à la place du 2
-        } else if ($_POST["follow_friend_request"]=="befriend") {
-            $pdo->exec("INSERT INTO friends_list (id_friend_1st, id_friend_2nd, accept  ) VALUES ('$_SESSION[user]', 2, FALSE)");
+   function followBefriend($input, $target) {
+        
+        if ($input) {
+            $userId_int = intval($_SESSION['user']['id_user']);
+            global $pdo;
+            switch($input) {
+                case "follow":
+                    $pdo->exec("INSERT INTO followed_list (id_user, id_followed) VALUES ('$userId_int', '$target')");
+                    break
+                case "befriend":
+                    $pdo->exec("INSERT INTO friends_list (id_friend_1st, id_friend_2nd, accept  ) VALUES ('$userId_int', '$target', FALSE)");
+                    break
+                case "unfollow":
+                    $pdo->exec("DELETE FROM followed_list WHERE id_user ='$userId_int' AND id_followed ='$target' ");
+                    break
+                case "unfriend"
+                    $pdo->exec("DELETE FROM friends_list WHERE (id_friend_1st ='$userId_int' AND id_friend_2nd ='$target) OR  (id_friend_1st ='$target AND id_friend_2nd ='$userId_int')");
+            }
         }
     }
 ?>
+
+
+
