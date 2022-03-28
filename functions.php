@@ -17,11 +17,11 @@ if(isset($_GET['action']) && $_GET['action']="deconnexion") {
 // Demande d'ami et abonnement
 function followBefriend($input, $target) {
     if ($input) {
-        $userId_int = intval($_SESSION['user']['id_user']);
+        global $userId_int;
         global $pdo;
         if ($input=="follow") {
             $pdo->exec("INSERT INTO followed_list (id_user, id_followed) VALUES ('$userId_int', '$target')");
-            $pdo->exec("UPDATE user SET followed_list=CONCAT(followed_list,' $target')");
+            $pdo->exec("UPDATE user SET followed_list=CONCAT(followed_list,' $target') WHERE id_user='$userId_int' ");
             // pour s'abonner il faut aller sur le compte de la personne auquel on veut s'abonner, il y a donc une requete pour
             // pour cet utilisateur sur lequel on a clique, on recup les infos de cette requette à la place du 2
         } else if ($input=="befriend") {
@@ -34,4 +34,45 @@ function followBefriend($input, $target) {
 
 //je declare une variable qui me permettra d'afficher des messages pour l'utilisateur:
 $content ='';
+
+
+function followBefriend2 ($input, $target) {
+    global $_SESSION['followed_list'];
+    global $_SESSION['list_of_friends'];
+    // bouton avec les différentes options
+    echo '<form method="post"> <select name="follow_friend_request" id="" class="btn-follow-befriend">';
+        foreach($_SESSION['followed_list'] as $id_followed) {
+            if ($target == $id_followed) {
+                echo '<option value="unfollow">Se désabonner</option>';
+            } else {
+                echo '<option value="follow">S\'abonner</option>';
+            }
+        }
+        foreach($_SESSION['list_of_friends'] as $id_friend) {
+            if ($target == $id_friend) {
+                echo '<option value="unfriend">Ne plus être ami avec cette personne</option>';
+            } else {
+                echo '<option value="befriend">Demander en ami</option>'
+            }
+        }
+    echo '</select> <input type="submit" value="Soumettre"> </form>';
+    if ($input) {
+        global $userId_int;
+        global $pdo;
+        switch($input) {
+            case "follow":
+                $pdo->exec("INSERT INTO followed_list (id_user, id_followed, unfollow) VALUES ('$userId_int', '$target', 0)");
+                $pdo->exec("UPDATE user SET followed_list=CONCAT(followed_list,' $target') WHERE id_user='$userId_int' ");
+                break
+            case "befriend":
+                $pdo->exec("INSERT INTO friend_request (id_friend_1st, id_friend_2nd, accept, date ) VALUES ('$userId_int', '$target', FALSE, NOW())");
+                break
+            case "unfollow":
+                $pdo->exec("UPDATE followed_list  SET unfollow=1");
+                break
+            case "unfriend"
+                $pdo->exec("UPDATE friend_request  SET accept=0");
+        }
+    }
+}
 ?>
