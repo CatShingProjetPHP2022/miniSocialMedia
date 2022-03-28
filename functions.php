@@ -21,10 +21,11 @@ function followBefriend($input, $target) {
         global $pdo;
         if ($input=="follow") {
             $pdo->exec("INSERT INTO followed_list (id_user, id_followed) VALUES ('$userId_int', '$target')");
+            $pdo->exec("UPDATE user SET followed_list=CONCAT(followed_list,' $target')");
             // pour s'abonner il faut aller sur le compte de la personne auquel on veut s'abonner, il y a donc une requete pour
             // pour cet utilisateur sur lequel on a clique, on recup les infos de cette requette à la place du 2
         } else if ($input=="befriend") {
-            $pdo->exec("INSERT INTO friends_list (id_user, id_friend, accept  ) VALUES ('$userId_int', '$target', FALSE)");
+            $pdo->exec("INSERT INTO friend_request (id_user, id_friend, accept, date  ) VALUES ('$userId_int', '$target', 0, NOW())");
         }
     }
 

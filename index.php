@@ -60,8 +60,8 @@ if(!isset($_SESSION['user'])) {
         <!-- on affiche les posts -->
         <?php
             // Tres longue requete qui va chercher les posts de l'utilisateur, des comptes qu'il suit plus ceux de ses amis pour afficher les 10 premiers et les trier du plus récent au plus ancient
-            // $r2 = $pdo->query("SELECT * FROM post WHERE id_author = '$userId_int' OR id_author = (SELECT id_followed FROM `followed_list` WHERE id_user = '$userId_int') OR id_author = (SELECT id_friend_1st FROM `friends_list` WHERE id_friend_2nd = '$userId_int') OR id_author = (SELECT id_friend_2nd FROM `friends_list` WHERE id_friend_1st = '$userId_int') ORDER BY date DESC LIMIT 0,10");
-            $r2 = $pdo->query("SELECT * FROM post WHERE id_author = 1 OR id_author IN (SELECT id_followed FROM `followed_list` WHERE id_user = 1) OR id_author IN (SELECT id_user FROM `friends_list` WHERE id_friend = 1) OR id_author IN (SELECT id_friend FROM `friends_list` WHERE id_user = 1) ORDER BY date DESC LIMIT 0,10");
+            // SELECT * FROM post WHERE id_author = 1 OR id_author IN (SELECT id_followed FROM `followed_list` WHERE id_user = 1) OR id_author IN (SELECT id_user FROM `friend_request` WHERE id_friend = 1) OR id_author IN (SELECT id_friend FROM `friend_request` WHERE id_user = 1) ORDER BY date DESC LIMIT 0,10
+            $r2 = $pdo->query("SELECT * FROM post WHERE id_author = '$userId_int' OR id_author IN (SELECT id_followed FROM `followed_list` WHERE id_user = '$userId_int') OR id_author IN (SELECT id_user FROM `friend_request` WHERE id_friend = '$userId_int' AND accept=1) OR id_author IN (SELECT id_friend FROM `friend_request` WHERE id_user = '$userId_int' AND accept=1) ORDER BY date DESC LIMIT 0,10");
             while($allPost = $r2->fetch(PDO::FETCH_ASSOC)) {
                 ?><div>
                         <p><?php echo $allPost['author_username'];?></p>

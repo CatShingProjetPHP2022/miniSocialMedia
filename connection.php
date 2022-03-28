@@ -22,7 +22,8 @@ include('functions.php');
                 $_SESSION['user']['username'] = $user['username'];
                 $_SESSION['user']['photo_link'] = $user['photo_link'];
                 $_SESSION['user']['email'] = $user['email'];
-                $_SESSION['list_of_friends'] = explode(" ",$user['all_friends']);
+                $_SESSION['list_of_friends'] = explode(" ",$user['list_of_friends']);
+                $_SESSION['followed_list'] = explode(" ",$user['followed_list']);
                  // Pour une raison que je ne connais pas la requete sql ne lis pas les tableaux associatifs, j'ai donc mis les données du session qui m'intéressait dans des variables
                 $userId_int = intval($_SESSION['user']['id_user']);
                 $username = $_SESSION['user']['username'];
