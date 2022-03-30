@@ -37,8 +37,8 @@ $content ='';
 
 
 function followBefriend2 ($input, $target) {
-    global $_SESSION['followed_list'];
-    global $_SESSION['list_of_friends'];
+    // global $_SESSION['followed_list'];
+    // global $_SESSION['list_of_friends'];
     // bouton avec les différentes options
     echo '<form method="post"> <select name="follow_friend_request" id="" class="btn-follow-befriend">';
         foreach($_SESSION['followed_list'] as $id_followed) {
@@ -52,7 +52,7 @@ function followBefriend2 ($input, $target) {
             if ($target == $id_friend) {
                 echo '<option value="unfriend">Ne plus être ami avec cette personne</option>';
             } else {
-                echo '<option value="befriend">Demander en ami</option>'
+                echo '<option value="befriend">Demander en ami</option>';
             }
         }
     echo '</select> <input type="submit" value="Soumettre"> </form>';
@@ -63,16 +63,34 @@ function followBefriend2 ($input, $target) {
             case "follow":
                 $pdo->exec("INSERT INTO followed_list (id_user, id_followed, unfollow) VALUES ('$userId_int', '$target', 0)");
                 $pdo->exec("UPDATE user SET followed_list=CONCAT(followed_list,' $target') WHERE id_user='$userId_int' ");
-                break
+                break;
             case "befriend":
                 $pdo->exec("INSERT INTO friend_request (id_friend_1st, id_friend_2nd, accept, date ) VALUES ('$userId_int', '$target', FALSE, NOW())");
-                break
+                break;
             case "unfollow":
                 $pdo->exec("UPDATE followed_list  SET unfollow=1");
-                break
-            case "unfriend"
+                break;
+            case "unfriend":
                 $pdo->exec("UPDATE friend_request  SET accept=0");
         }
     }
 }
+
+
+// Ajouter une photo de profil
+// Si notre image à un nom et pas d'erreur de chargement
+function uploadPicture ($file) {
+    if(isset($_FILES["$file"]["name"]) && ($_FILES["$file"]["error"] == 0)) {
+        // stockage de l'image
+        $pictureName = preg_replace("/\s+/", "", (time().basename($_FILES["$file"]["name"])));
+        $parent = dirname(__DIR__);
+        $adressPicture = "./images/".$pictureName;
+        move_uploaded_file($_FILES["$file"]["tmp_name"], $adressPicture);
+        return $adressPicture;
+    } 
+}
+
+
+
+
 ?>

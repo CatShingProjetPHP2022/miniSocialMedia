@@ -1,5 +1,6 @@
 <?php include("functions.php");
 
+
 // Si l'utilisateur n'est pas connecté on lui demande de se connecter
 if(!isset($_SESSION['user'])) {
 	header('location:connection.php');

@@ -1,19 +1,17 @@
 <?php
 include('functions.php');
 
-
-
 //si le formulaire a été posté, alors là on balance la fonctionnalité :
 if ($_POST) {
     //je vérifie si je récupère bien les valeurs des champs:
     //print_r($_POST);
-    $_POST["photo_link"] = "profilepicture/UsernameEmailTimePhoto.jpg";
+
     //je définie une variable pour afficher les erreurs:
         // Je vérifie si je récupère bien les valeurs des champs
         // print_r($_POST);
         // Je défini une variable pour afficher les erreurs
         $erreur = '';
-
+        
         // Si le prénom n'est pas trop court ou n'est pas trop long:
         if (strlen($_POST['username']) < 3 || strlen($_POST['username']) > 20) {
             $erreur = 'Taille d\'username incorrect';
@@ -47,11 +45,20 @@ if ($_POST) {
     //je hash le mot de passe :
     $_POST['password'] = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
+    //J'upload la photo, si et seulement si il n'y a pas d'autre erreur pour éviter d'uploader 2 fois la photo alors qu'on a foiré l'inscription
+    if (empty($erreur)) {
+        $photo_link="photo_link";
+        $_POST["photo_link"] = uploadPicture($photo_link);
+        if (!file_exists($_POST["photo_link"])) {
+            $erreur .= "<p>Fichier non uploadé</p>";
+        }        
+    }
+
     // Si serveur est vide (empty()) :
     if (empty($erreur)) {
         $pdo->exec("INSERT INTO user (username, password,photo_link, email) VALUES ('$_POST[username]', '$_POST[password]', '$_POST[photo_link]', '$_POST[email]')");
         $content .= '<p>Inscription validée</p>';
-    }// AJOUTER  DANS LA LIGNE 53 photo_link
+    }
     //j'ajoute le contenu de $erreur à l'interieur de $content
     $content .= $erreur;
 }
@@ -71,7 +78,7 @@ if ($_POST) {
 <body>
 
     <section class="signup_form_wrapper">
-        <form method="post" class="signup_form">
+        <form method="post" class="signup_form" enctype="multipart/form-data">
 
             <div class="username">
                 <label for="username" placeholder="@example"><b>Nom d'utilisateur</b></label>
@@ -87,8 +94,8 @@ if ($_POST) {
             <div class="profile_picture">
                 <label for="photo_link"><b>Photo de profil</b></label>
                 <p>Selectionnez une photo</p>
-                <input type="file" name="NOT_YET_photo_link" required>
-                <!-- Il faut créer un dossier pour stocker la fucking photo puis mettre l'adresse de la photo dans $_POST['photo-link']; -->
+                <input type="file" name="photo_link" required>
+                <!-- Il faut créer un dossier pour stocker la photo puis mettre l'adresse de la photo dans $_POST['photo-link']; -->
             </div>
 
             <div class="email">
