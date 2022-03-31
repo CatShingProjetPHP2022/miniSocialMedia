@@ -83,7 +83,6 @@ function uploadPicture ($file) {
     if(isset($_FILES["$file"]["name"]) && ($_FILES["$file"]["error"] == 0)) {
         // stockage de l'image
         $pictureName = preg_replace("/\s+/", "", (time().basename($_FILES["$file"]["name"])));
-        $parent = dirname(__DIR__);
         $adressPicture = "./images/".$pictureName;
         move_uploaded_file($_FILES["$file"]["tmp_name"], $adressPicture);
         return $adressPicture;
