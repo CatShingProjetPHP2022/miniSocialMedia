@@ -10,3 +10,9 @@
     display: block;
     transition: 1s;
 }
+
+.container_post {
+    margin-bottom: 30px;
+    border: solid blue 2px;
+    padding: 10px;
+}

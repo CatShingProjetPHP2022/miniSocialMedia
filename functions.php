@@ -41,20 +41,29 @@ function followBefriend2 ($input, $target) {
     // global $_SESSION['list_of_friends'];
     // bouton avec les différentes options
     echo '<form method="post"> <select name="follow_friend_request" id="" class="btn-follow-befriend">';
-        foreach($_SESSION['followed_list'] as $id_followed) {
-            if ($target == $id_followed) {
-                echo '<option value="unfollow">Se désabonner</option>';
-            } else {
-                echo '<option value="follow">S\'abonner</option>';
-            }
-        }
+        $friend = 0;
         foreach($_SESSION['list_of_friends'] as $id_friend) {
             if ($target == $id_friend) {
+                $friend += 1;
                 echo '<option value="unfriend">Ne plus être ami avec cette personne</option>';
+                break;
             } else {
                 echo '<option value="befriend">Demander en ami</option>';
+                break;
             }
         }
+        if ($friend == 0) {
+            foreach($_SESSION['followed_list'] as $id_followed) {
+                if ($target == $id_followed) {
+                    echo '<option value="unfollow">Se désabonner</option>';
+                    break;
+                } else {
+                    echo '<option value="follow">S\'abonner</option>';
+                    break;
+                }
+            }
+        }
+
     echo '</select> <input type="submit" value="Soumettre"> </form>';
     if ($input) {
         global $userId_int;
@@ -63,12 +72,17 @@ function followBefriend2 ($input, $target) {
             case "follow":
                 $pdo->exec("INSERT INTO followed_list (id_user, id_followed, unfollow) VALUES ('$userId_int', '$target', 0)");
                 $pdo->exec("UPDATE user SET followed_list=CONCAT(followed_list,' $target') WHERE id_user='$userId_int' ");
+                // Si ça existe déjà juste on
                 break;
             case "befriend":
                 $pdo->exec("INSERT INTO friend_request (id_friend_1st, id_friend_2nd, accept, date ) VALUES ('$userId_int', '$target', FALSE, NOW())");
                 break;
             case "unfollow":
-                $pdo->exec("UPDATE followed_list  SET unfollow=1");
+                // Detruit la ligne correspondante dans la table followed list puis enlève l'ID de la personne dans la followed_list de user
+                $pdo->exec("DELETE FROM followed_list WHERE id_user= '$userId_int' and id_followed='$target'");
+                $pdo->exec("UPDATE user SET followed_list=REPLACE(followed_list,' '$target' ', ' ') WHERE id_user=$userId_int;
+                            UPDATE user SET followed_list =INSERT(followed_list, LOCATE(' \'$target\' ', followed_list), CHAR_LENGTH(' \'$target\'), '') WHERE id_user=$userId_int;
+                            UPDATE user SET followed_list =REVERSE(INSERT(REVERSE(followed_list), LOCATE('\'$target\' ', REVERSE(followed_list)), CHAR_LENGTH('\'$target\' '), '')) WHERE id_user='$userId_int';");
                 break;
             case "unfriend":
                 $pdo->exec("UPDATE friend_request  SET accept=0");
