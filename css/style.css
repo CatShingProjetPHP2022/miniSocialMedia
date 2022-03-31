@@ -11,8 +11,20 @@
     transition: 1s;
 }
 
-.container_post {
-    margin-bottom: 30px;
-    border: solid blue 2px;
-    padding: 10px;
+.main {
+    display: flex;
+    flex-direction: row-reverse;
 }
+
+    .single-notification {
+        margin-bottom: 10px; 
+        border: solid red 2px;
+        padding: 8px;
+    }
+
+    .container_post_single {
+        margin-bottom: 30px;
+        border: solid blue 2px;
+        padding: 10px;
+        width: 60vw;
+    }
