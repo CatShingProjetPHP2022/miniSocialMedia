@@ -36,7 +36,6 @@ include('functions.php');
         } else {
             $content .= '<p>Compte inexistant</p>';
         }
-    
     }
 ?>
 

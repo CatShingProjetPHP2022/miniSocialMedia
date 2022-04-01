@@ -44,6 +44,11 @@ $username = $_SESSION['user']['username'];
                             $idNotif = "befriend".$allNotif['id_friend_request'];
                             echo "<form method=post>";
                                 echo '<input type="submit" name="'; echo $idNotif.'" value="Accepter la demande d\'ami">';
+                                if ($_POST) {
+                                    if ($_POST["$idNotif"]) {
+                                        $pdo->exec("UPDATE friend_request SET accept=1 WHERE id_user='$allNotif[id_user]' AND id_friend='$userId_int' ");
+                                    }
+                                }
                             echo "</form>";
                         echo "</div>";
                     } 
@@ -86,9 +91,11 @@ $username = $_SESSION['user']['username'];
                             <!-- Rajout du bouton follow/befriend si l'auteur du poste n'est pas l'utilisateur -->
                             <?php if ($allPost['author_username']!= $username) { 
                                 $idForm = "follow_friend_request_".$allPost['id_post'];
-                                echo '<form method="post"> <select name="'; echo $idForm.'" id="" class="btn-follow-befriend">';
-                                followBefriend2($_POST["$idForm"], $allPost['id_author']);
-                                echo '</select> <input type="submit" value="Soumettre"> </form>';
+                                echo '<form method="post"> 
+                                        <select name="'; echo $idForm.'" id="" class="btn-follow-befriend">';
+                                            followBefriend($_POST["$idForm"], $allPost['id_author']);
+                                echo    '</select> <input type="submit" value="Soumettre"> 
+                                      </form>';
                             } ?> 
                     </div><?php
                 } ?>
