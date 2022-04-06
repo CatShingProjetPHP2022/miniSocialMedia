@@ -18,6 +18,22 @@ if(isset($_GET['action']) && $_GET['action']="deconnexion") {
 $content ='';
 
 
+function getNav() {
+    ?>
+        <nav>
+            <ul>
+                <li>Accueil</li>
+                <li>Profil</li>
+                <li>Notifications</li>
+                <li>Créer un post</li>
+                <?php if(isset($_SESSION["user"])) { ?>
+                <li><a href="?action=déconnexion">Se déconnecter</a></li>
+                <?php } ?>
+            </ul>
+        </nav>
+    <?php
+}
+
 function followBefriend ($input, $target) {
     // global $_SESSION['followed_list'];
     // global $_SESSION['list_of_friends'];
@@ -90,6 +106,53 @@ function uploadPicture ($file) {
 }
 
 
+function createPost($createPostSQL) {
+    global $pdo;
+    global $username;
+    ?>
+        <!-- <div>
+            <input type="checkbox" name="my-checkbox" id="check_create_post">
+            <label for="check_create_post">+</label>
+        </div> -->
+        <!-- Pour poster -->
+        <form class="form-create-post" name="create-post" method="post">
+            <input type="text" name="content">
+            <input type="submit" value="Poster !">
+        </form>
+        <!-- requête pour créer un post -->
+        <?php 
+        // var_dump($userId_int);
+            if($_POST) {
+                if ($_POST["content"]) {
+                    // Gestion d'erreur pour les ""
+                    $content= addslashes($_POST['content']);
+                    // Requete pour créer le poste
+                    $pdo->exec($createPostSQL);
+                }
+            }
+}
 
+function showPosts($showPostSQL) {
+    global $pdo;
+    global $username;
+    //on affiche les posts
+    $r2 = $pdo->query($showPostSQL);
+    while($allPost = $r2->fetch(PDO::FETCH_ASSOC)) {
+        ?><div class="container_post_single">
+                <p><?php if ($allPost['author_username']==$username) { echo "Moi";} else { echo $allPost['author_username'];}?></p>
+                <p><?php echo $allPost['date'];?></p>
+                <p><?php echo $allPost['content'];?></p>
+                <!-- Rajout du bouton follow/befriend si l'auteur du poste n'est pas l'utilisateur -->
+                <?php if ($allPost['author_username']!= $username) { 
+                    $idForm = "follow_friend_request_".$allPost['id_post'];
+                    echo '<form method="post"> 
+                            <select name="'; echo $idForm.'" id="" class="btn-follow-befriend">';
+                                followBefriend($_POST["$idForm"], $allPost['id_author']);
+                    echo    '</select> <input type="submit" value="Soumettre"> 
+                            </form>';
+                };
+        echo "</div>";
+    }
+}
 
 ?>
