@@ -2,14 +2,37 @@
     display: none !important;
 } */
 
-#input:not(checked) ~ .form-create-post {
+/* #input:not(checked) ~ .form-create-post {
     display: none;
     transition: 1s;
 }
 #input:checked ~ .form-create-post {
     display: block;
     transition: 1s;
+} */
+li {
+    list-style: none;
 }
+
+
+header {
+    height: 10vh;
+    display: flex;
+    justify-content: space-around;
+}
+
+    header > img {
+        height: 100%;
+        object-fit: contain;
+    }
+
+    nav {
+        width: 40%;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+    }
+
 
 .main {
     display: flex;

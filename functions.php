@@ -19,9 +19,16 @@ $content ='';
 
 
 function getNav() {
+    $input = $_GET["searchRequest"];
+    $$_GET["confirmSearch"];
     ?>
-        <nav>
-            <ul>
+        <header>
+            <img src="<?php echo $_SESSION['user']['photo_link']?>" alt="profile_picture">
+            <form name="search" method="get" action="">
+                <input type="text" name="searchRequest" placeholder="">
+                <input type="submit" name="confirmSearch" value="Rechercher">
+            </form>
+            <nav>
                 <li>Accueil</li>
                 <li>Profil</li>
                 <li>Notifications</li>
@@ -29,8 +36,9 @@ function getNav() {
                 <?php if(isset($_SESSION["user"])) { ?>
                 <li><a href="?action=déconnexion">Se déconnecter</a></li>
                 <?php } ?>
-            </ul>
-        </nav>
+            </nav>
+        </header>
+        <br>
     <?php
 }
 

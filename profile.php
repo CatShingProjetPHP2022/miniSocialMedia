@@ -23,6 +23,10 @@ $username = $_SESSION['user']['username'];
 </head>
 <body>
     <?php getNav(); ?>
+    <div class="profile-container">
+        <img src="" alt="">
+        <p></p>
+    </div>
     <div class="main">
         <div class="container-notifications">
                 <?php 
