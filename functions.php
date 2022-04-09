@@ -19,27 +19,31 @@ $content ='';
 
 
 function getNav() {
-    $input = $_GET["searchRequest"];
-    $$_GET["confirmSearch"];
     ?>
         <header>
             <img src="<?php echo $_SESSION['user']['photo_link']?>" alt="profile_picture">
-            <form name="search" method="get" action="">
-                <input type="text" name="searchRequest" placeholder="">
+            <form class ="search-bar" name="search" method="get" action="">
+                <input type="text" name="searchRequest" value="<?php if (isset($_GET["searchRequest"])) {echo $_GET["searchRequest"];} ?>" placeholder="">
                 <input type="submit" name="confirmSearch" value="Rechercher">
             </form>
             <nav>
-                <li>Accueil</li>
+                <a href="index.php">Accueil</a>
                 <li>Profil</li>
                 <li>Notifications</li>
                 <li>Créer un post</li>
                 <?php if(isset($_SESSION["user"])) { ?>
-                <li><a href="?action=déconnexion">Se déconnecter</a></li>
+                <a href="?action=déconnexion">Se déconnecter</a>
                 <?php } ?>
             </nav>
         </header>
-        <br>
+        <a href=""></a>
     <?php
+        // affiche les résultats
+        global $pdo;
+        if(isset($_GET["confirmSearch"]) && !empty(trim($_GET["searchRequest"]))) {
+            header("location:search_results.php?searchRequest=".trim($_GET["searchRequest"]));
+            // ."&confirmSearch=Rechercher"
+        }
 }
 
 function followBefriend ($input, $target) {
@@ -154,7 +158,7 @@ function showPosts($showPostSQL) {
                 <?php if ($allPost['author_username']!= $username) { 
                     $idForm = "follow_friend_request_".$allPost['id_post'];
                     echo '<form method="post"> 
-                            <select name="'; echo $idForm.'" id="" class="btn-follow-befriend">';
+                            <select name="'; echo $idForm.'" class="btn-follow-befriend">';
                                 followBefriend($_POST["$idForm"], $allPost['id_author']);
                     echo    '</select> <input type="submit" value="Soumettre"> 
                             </form>';

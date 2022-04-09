@@ -20,10 +20,11 @@ $username = $_SESSION['user']['username'];
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil</title>
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/reset.css">
 </head>
 <body>
     <?php getNav(); ?>
-    <div class="main">
+    <div class="main <?php if (isset($_GET["confirmSearch"])) {echo "results-display";} ?>">
         <div class="container-notifications">
                 <?php 
                     $n = $pdo->query("SELECT * FROM friend_request WHERE accept = 0 AND id_friend='$userId_int' ORDER BY date DESC LIMIT 0,10 ");

@@ -26,6 +26,14 @@ header {
         object-fit: contain;
     }
 
+    .search-bar {
+        display: flex;
+        gap: 10%;
+        align-items: center;
+    }
+        .search-bar > input {
+            height: 30%;
+        }
     nav {
         width: 40%;
         display: flex;
@@ -39,6 +47,10 @@ header {
     flex-direction: row-reverse;
 }
 
+    .results-display {
+        display: none;
+    }
+
     .single-notification {
         margin-bottom: 10px; 
         border: solid red 2px;
@@ -50,4 +62,28 @@ header {
         border: solid blue 2px;
         padding: 10px;
         width: 60vw;
+    }
+
+.search-result {
+    height: 10vh;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+    .search-result > img {
+        height: 100%;
+        object-fit: contain;
+    }
+
+.profile-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 30vh;
+    width: 40vw;
+}
+
+    .profile-container > img {
+        height: 50%;
+        object-fit: contain;
     }

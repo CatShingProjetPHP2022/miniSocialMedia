@@ -1,6 +1,10 @@
 <?php
 include('functions.php');
 
+if (isset($_SESSION["user"])) {
+    header('location:index.php');
+}
+
 // Si le form est posté :
     if($_POST) {
         // Je vérifie si je récupère bien les infos :
@@ -47,6 +51,7 @@ include('functions.php');
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/style_connection.css">
+    <link rel="stylesheet" href="css/reset.css">
     <title>Connexion</title>
 </head>
 
