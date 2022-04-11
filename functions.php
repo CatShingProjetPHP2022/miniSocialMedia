@@ -28,7 +28,7 @@ function getNav() {
             </form>
             <nav>
                 <a href="index.php">Accueil</a>
-                <li>Profil</li>
+                <a href="profile.php">Mon profil</a>
                 <li>Notifications</li>
                 <li>Créer un post</li>
                 <?php if(isset($_SESSION["user"])) { ?>
@@ -209,7 +209,7 @@ function showPosts($showPostSQL) {
                 //     echo    '</select> <input type="submit" value="Soumettre"> 
                 //             </form>';
                 // };
-                
+
                 comments($allPost['id_post']);
         echo "</div>";
     }

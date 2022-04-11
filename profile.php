@@ -14,6 +14,14 @@ if(isset($_GET['profil']) && is_int(intval($_GET["profil"]))) {
     $userProfileId = intval($_GET["profil"]);
     $u = $pdo->query("SELECT * FROM user WHERE id_user = '$userProfileId' ");
     $profile = $u->fetch();
+    $name = $profile["username"];
+    $pageTitle = "Profil de ".$name;
+    $photo = $profile["photo_link"];
+} else {
+    $userProfileId = $userId_int;
+    $name = $username;
+    $pageTitle = "Mon profil";
+    $photo = $_SESSION['user']['photo_link'];
 }
 
 ?>
@@ -24,21 +32,22 @@ if(isset($_GET['profil']) && is_int(intval($_GET["profil"]))) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profil</title>
+    <title><?php echo $pageTitle ?></title>
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/reset.css">
 </head>
 <body>
     <?php getNav(); ?>
     <div class="profile-container">
-        <img src="<?php echo $profile["photo_link"]; ?>" alt="">
-        <p><?php echo $profile["username"]; ?></p>
-        <form action="" method="post">
+        <img src="<?php echo $photo; ?>" alt="">
+        <p><?php echo $name; ?></p>
+        <?php if (intval($userProfileId) != $userId_int ){
+        ?><form action="" method="post">
             <select name="follow_friend_request" class="btn-follow-befriend">
                 <?php followBefriend($_POST["follow_friend_request"], $userProfileId); ?>
             </select>
             <input type="submit" value="Soumettre">
-        </form>
+        </form> <?php } ?>
     </div>
     <div class="main">
         <br><br>
