@@ -151,8 +151,8 @@ function comments($idPost) {
         while($allComments = $c->fetch(PDO::FETCH_ASSOC)) {
             ?><div class="container_comment_single">
                 <p><?php if ($allComments['author_username']==$username) { echo "Moi";} else { echo $allComments['author_username'];}?></p>
-                <p><?php echo $allComments['date'];?></p>
                 <p><?php echo $allComments['content'];?></p>
+                <p><?php echo $allComments['date'];?></p>
             </div>
             <?php
         }
@@ -189,20 +189,27 @@ function showPosts($showPostSQL) {
     //on affiche les posts
     $r2 = $pdo->query($showPostSQL);
     while($allPost = $r2->fetch(PDO::FETCH_ASSOC)) {
+        $profilePicture = $pdo->query("SELECT photo_link FROM user WHERE id_user = '$allPost[id_author]' ");
+        $profilePicture = $profilePicture->fetch();
         ?><div class="container_post_single">
-                <p><?php if ($allPost['author_username']==$username) { echo "Moi";} else { echo $allPost['author_username'];}?></p>
-                <p><?php echo $allPost['date'];?></p>
+                <a href="profile.php?profil=<?php echo $allPost['id_author'] ?>"><?php if ($allPost['author_username']==$username) { echo "Moi";} else { echo $allPost['author_username'];}?></a>
+                <img src="<?php echo $profilePicture[0];?>" alt="image de profil">
                 <p><?php echo $allPost['content'];?></p>
+                <p><?php echo $allPost['date'];?></p>
                 <!-- Rajout du bouton follow/befriend si l'auteur du poste n'est pas l'utilisateur -->
                 <?php 
-                if ($allPost['author_username']!= $username) { 
-                    $idForm = "follow_friend_request_".$allPost['id_post'];
-                    echo '<form method="post"> 
-                            <select name="'; echo $idForm.'" class="btn-follow-befriend">';
-                                followBefriend($_POST["$idForm"], $allPost['id_author']);
-                    echo    '</select> <input type="submit" value="Soumettre"> 
-                            </form>';
-                };
+                // C'était une mauvaise idée de rajouter un bouton follow/demande d'ami dans chaque post 
+                // alors qu'on peut directement cliquer sur le profil pour ça
+
+                // if ($allPost['author_username']!= $username) { 
+                //     $idForm = "follow_friend_request_".$allPost['id_post'];
+                //     echo '<form method="post"> 
+                //             <select name="'; echo $idForm.'" class="btn-follow-befriend">';
+                //                 followBefriend($_POST["$idForm"], $allPost['id_author']);
+                //     echo    '</select> <input type="submit" value="Soumettre"> 
+                //             </form>';
+                // };
+                
                 comments($allPost['id_post']);
         echo "</div>";
     }
