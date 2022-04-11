@@ -56,7 +56,7 @@ if ($_POST) {
 
     // Si serveur est vide (empty()) :
     if (empty($erreur)) {
-        $pdo->exec("INSERT INTO user (username, password,photo_link, email) VALUES ('$_POST[username]', '$_POST[password]', '$_POST[photo_link]', '$_POST[email]')");
+        $pdo->exec("INSERT INTO user (username, password, photo_link, email, list_of_friends, followed_list) VALUES ('$_POST[username]', '$_POST[password]', '$_POST[photo_link]', '$_POST[email]', '', '')");
         $content .= '<p>Inscription validée</p>';
     }
     //j'ajoute le contenu de $erreur à l'interieur de $content

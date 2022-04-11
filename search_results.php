@@ -35,7 +35,7 @@ $username = $_SESSION['user']['username'];
                     echo "<img src=".$allResults["photo_link"]." alt=''>";
                     echo "<p>".$allResults["username"]."</p>";
                     if ($allResults["id_user"]== $userId_int) {
-                        echo "<a href='profile.php'>Accéder à mon profil</a>"
+                        echo "<a href='profile.php'>Accéder à mon profil</a>";
                     } else {
                         echo "<a href='profile.php?profil=".$allResults["id_user"]."'>Accéder au profil</a>";
                     }

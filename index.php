@@ -37,7 +37,13 @@ $username = $_SESSION['user']['username'];
                                 echo '<input type="submit" name="'; echo $idNotif.'" value="Accepter la demande d\'ami">';
                                 if ($_POST) {
                                     if ($_POST["$idNotif"]) {
-                                        $pdo->exec("UPDATE friend_request SET accept=1 WHERE id_user='$allNotif[id_user]' AND id_friend='$userId_int' ");
+                                        $fr = "UPDATE friend_request SET accept=1 WHERE id_user=:id_sender AND id_friend=:id_user;
+                                        UPDATE user SET list_of_friends=CONCAT(list_of_friends, ' ', :id_user) WHERE id_user=:id_sender;
+                                        UPDATE user SET list_of_friends=CONCAT(list_of_friends, ' ', :id_sender) WHERE id_user=:id_user";
+                                        $acceptFrienship = $pdo->prepare($fr);
+                                        $acceptFrienship->bindValue(':id_user', $userId_int);
+                                        $acceptFrienship->bindvalue(':id_sender', $allNotif['id_user']);
+                                        $acceptFrienship->execute();
                                     }
                                 }
                             echo "</form>";

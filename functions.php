@@ -50,41 +50,53 @@ function followBefriend ($input, $target) {
     // global $_SESSION['followed_list'];
     // global $_SESSION['list_of_friends'];
     // bouton avec les différentes options
-        $friend;
-        $listFriend = $_SESSION['list_of_friends'];
-        $listFollowed = $_SESSION['followed_list'];
-        foreach($listFriend as $id_friend) {
-            if ($target == $id_friend) {
+    global $userId_int, $pdo;
+    $friend;
+    $listFriend = $_SESSION['list_of_friends'];
+    $listFollowed = $_SESSION['followed_list'];
+    $alreadyAsked = $pdo->query("SELECT * FROM friend_request WHERE id_user ='$userId_int' AND id_friend='$target' AND accept=0");
+    $alreadyAsked2 = $pdo->query("SELECT * FROM friend_request WHERE id_user ='$target' AND id_friend='$userId_int AND accept=0");
+    foreach($listFriend as $id_friend) {
+        if ($target == $id_friend) {
                 echo '<option value="unfriend">Ne plus être ami avec cette personne</option>';
-                $friend = true;
-            } 
-        }
-        if ($friend != true) {
-            $followed;
-            foreach($listFollowed as $id_followed) {
-                if ($target == $id_followed) {
-                    $followed = true;
-                    echo '<option value="unfollow">Se désabonner</option>';
-                    echo '<option value="befriend">Demander en ami</option>';
-                    ?> <option value=""> <?php echo var_dump($target) ;?> </option> <?php
-                    ?> <option value=""> <?php echo var_dump($input) ;?> </option> <?php
-                }
-            }
-            if ($followed != true) {
+            $friend = true;
+        } else if ($alreadyAsked->rowCount() >= 0) {
+            echo '<option value="befriend">Vous avez déjà envoyé une demande d\'ami</option>';
+        } else if ($alreadyAsked2->rowCount() >= 0) {
+            echo '<option value="befriend">On vous a déjà envoyé une demande d\'ami</option>';
+        } else {
+            echo '<option value="befriend">Demander en ami</option>';
+        }          
+    }
+    if (!isset($friend)) {
+        $followed;
+        foreach($listFollowed as $id_followed) {
+            if ($target == $id_followed) {
+                // Je suis déjà cette personne
+                $followed = true;
+                echo '<option value="unfollow">Se désabonner</option>';
+
+            } else {
                 echo '<option value="follow">S\'abonner</option>';
-                echo '<option value="befriend">Demander en ami</option>';
             }
         }
+    }
     if (isset($input)) {
-        global $userId_int, $pdo;
         switch($input) {
             case "follow":
-                $pdo->exec("INSERT INTO followed_list (id_user, id_followed, unfollow) VALUES ('$userId_int', '$target', 0);
-                            UPDATE user SET followed_list=CONCAT(followed_list,' $target') WHERE id_user='$userId_int' ");
+                $pdo->exec("INSERT INTO followed_list (id_user, id_followed, unfollow) VALUES (:id_user, :id_target, 0);
+                UPDATE user SET followed_list=CONCAT(followed_list, ' ',:id_target) WHERE id_user=:id_user ");
+                $follow = $pdo->prepare($req);
+                $follow->bindValue(':id_user', $userId_int);
+                $follow->bindValue(':id_target', $target);
+                $follow->execute();
                 break;
             case "befriend":
-                $pdo->exec("INSERT INTO friend_request (id_friend_1st, id_friend_2nd, accept, date ) VALUES ('$userId_int', '$target', 0, NOW());
-                            UPDATE user SET list_of_friends=CONCAT(list_of_friends,' $target') WHERE id_user='$userId_int' ");
+                $req = "INSERT INTO friend_request (id_user, id_friend, accept, date) VALUES (:id_user, :id_target, FALSE, NOW() )";
+                $befriend = $pdo->prepare($req);
+                $befriend->bindValue(':id_user', $userId_int);
+                $befriend->bindValue(':id_target', $target);
+                $befriend->execute();
                 break;
             case "unfollow":
                 //DELETE FROM followed_list WHERE id_user= '$userId_int' and id_followed='$target';
