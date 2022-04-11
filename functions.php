@@ -132,7 +132,7 @@ function uploadPicture ($file) {
 
 function comments($idPost) {
     echo "<div class='container-all-comments'>";
-        $uniqueNameForm = "content-comment".$idPost;
+        $uniqueNameForm = "content-comment-post".$idPost;
         ?>
         <form class="form-add-comment" name="comment" method="post">
             <input type="text" name="<?php echo $uniqueNameForm; ?>">
@@ -140,7 +140,7 @@ function comments($idPost) {
         </form>
         <?php
         // Ecrire un commentaire
-        if($_POST["$uniqueNameForm"]) {
+        if(isset($_POST["$uniqueNameForm"])) {
             global $pdo, $username, $userId_int;
             $comment= addslashes($_POST["$uniqueNameForm"]);
             $pdo->exec("INSERT INTO comment(id_post, id_user, author_username, date, content) VALUES ('$idPost', '$userId_int', '$username', NOW(), '$comment')");
@@ -175,7 +175,7 @@ function createPost($createPostSQL) {
         <?php 
         // var_dump($userId_int);
             if($_POST) {
-                if ($_POST["content-post"]) {
+                if (isset($_POST["content-post"])) {
                     // Gestion d'erreur pour les ""
                     $content= addslashes($_POST['content-post']);
                     // Requete pour créer le poste
