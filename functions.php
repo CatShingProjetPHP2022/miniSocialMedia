@@ -76,8 +76,7 @@ function followBefriend ($input, $target) {
             }
         }
     if (isset($input)) {
-        global $userId_int;
-        global $pdo;
+        global $userId_int, $pdo;
         switch($input) {
             case "follow":
                 $pdo->exec("INSERT INTO followed_list (id_user, id_followed, unfollow) VALUES ('$userId_int', '$target', 0);
@@ -117,10 +116,51 @@ function uploadPicture ($file) {
     } 
 }
 
+// function addComment($idPost) {
+    ?>
+    <!-- // <form class="form-add-comment" name="comment" method="post">
+    //     <input type="text" name="content-comment">
+    //     <input type="submit" value="Ecrire un commentaire">
+    // </form> -->
+    <?php
+//     if($_POST["content-comment"]) {
+//         global $pdo, $username, $userId_int;
+//         $comment= addslashes($_POST["content-comment"]);
+//         $pdo->exec("INSERT INTO comment(id_post, id_user, author_username, date, content) VALUES ('$idPost', '$userId_int', '$username', NOW(), '$comment')");
+//     }
+// }
+
+function comments($idPost) {
+    echo "<div class='container-all-comments'>";
+        $uniqueNameForm = "content-comment".$idPost;
+        ?>
+        <form class="form-add-comment" name="comment" method="post">
+            <input type="text" name="<?php echo $uniqueNameForm; ?>">
+            <input type="submit" value="Ecrire un commentaire">
+        </form>
+        <?php
+        // Ecrire un commentaire
+        if($_POST["$uniqueNameForm"]) {
+            global $pdo, $username, $userId_int;
+            $comment= addslashes($_POST["$uniqueNameForm"]);
+            $pdo->exec("INSERT INTO comment(id_post, id_user, author_username, date, content) VALUES ('$idPost', '$userId_int', '$username', NOW(), '$comment')");
+        }
+        global $pdo, $username;
+        $c = $pdo->query("SELECT * FROM comment WHERE id_post = '$idPost' ORDER BY date");
+        // Montrer les commentaires
+        while($allComments = $c->fetch(PDO::FETCH_ASSOC)) {
+            ?><div class="container_comment_single">
+                <p><?php if ($allComments['author_username']==$username) { echo "Moi";} else { echo $allComments['author_username'];}?></p>
+                <p><?php echo $allComments['date'];?></p>
+                <p><?php echo $allComments['content'];?></p>
+            </div>
+            <?php
+        }
+    echo "</div>";
+}
 
 function createPost($createPostSQL) {
-    global $pdo;
-    global $username;
+    global $pdo, $username, $userId_int;
     ?>
         <!-- <div>
             <input type="checkbox" name="my-checkbox" id="check_create_post">
@@ -128,16 +168,16 @@ function createPost($createPostSQL) {
         </div> -->
         <!-- Pour poster -->
         <form class="form-create-post" name="create-post" method="post">
-            <input type="text" name="content">
+            <input type="text" name="content-post">
             <input type="submit" value="Poster !">
         </form>
         <!-- requête pour créer un post -->
         <?php 
         // var_dump($userId_int);
             if($_POST) {
-                if ($_POST["content"]) {
+                if ($_POST["content-post"]) {
                     // Gestion d'erreur pour les ""
-                    $content= addslashes($_POST['content']);
+                    $content= addslashes($_POST['content-post']);
                     // Requete pour créer le poste
                     $pdo->exec($createPostSQL);
                 }
@@ -145,8 +185,7 @@ function createPost($createPostSQL) {
 }
 
 function showPosts($showPostSQL) {
-    global $pdo;
-    global $username;
+    global $pdo, $username;
     //on affiche les posts
     $r2 = $pdo->query($showPostSQL);
     while($allPost = $r2->fetch(PDO::FETCH_ASSOC)) {
@@ -155,7 +194,8 @@ function showPosts($showPostSQL) {
                 <p><?php echo $allPost['date'];?></p>
                 <p><?php echo $allPost['content'];?></p>
                 <!-- Rajout du bouton follow/befriend si l'auteur du poste n'est pas l'utilisateur -->
-                <?php if ($allPost['author_username']!= $username) { 
+                <?php 
+                if ($allPost['author_username']!= $username) { 
                     $idForm = "follow_friend_request_".$allPost['id_post'];
                     echo '<form method="post"> 
                             <select name="'; echo $idForm.'" class="btn-follow-befriend">';
@@ -163,6 +203,7 @@ function showPosts($showPostSQL) {
                     echo    '</select> <input type="submit" value="Soumettre"> 
                             </form>';
                 };
+                comments($allPost['id_post']);
         echo "</div>";
     }
 }

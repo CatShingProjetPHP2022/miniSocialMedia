@@ -64,6 +64,17 @@ header {
         width: 60vw;
     }
 
+        .container-all-comments {
+            border: solid rgb(30, 255, 0) 2px;
+            padding: 5px;
+        }
+
+            .container_comment_single{
+            margin-bottom: 15px;
+            border: solid rgb(219, 100, 219) 2px;
+            padding: 5px;
+            }
+
 .search-result {
     height: 10vh;
     display: flex;
