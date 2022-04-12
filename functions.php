@@ -5,6 +5,7 @@ ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 //relier notre site à la database
 $pdo = new PDO('mysql:host=localhost;dbname=projet-php', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
+$pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, true);
 // On ouvre une session pour y stocker les infos utilisateurs
 session_start();
 
@@ -30,7 +31,7 @@ function getNav() {
                 <a href="index.php">Accueil</a>
                 <a href="profile.php">Mon profil</a>
                 <li>Notifications</li>
-                <li>Créer un post</li>
+                <a href="messages.php">Messages</a>
                 <?php if(isset($_SESSION["user"])) { ?>
                 <a href="?action=déconnexion">Se déconnecter</a>
                 <?php } ?>
@@ -54,16 +55,16 @@ function followBefriend ($input, $target) {
     $friend;
     $listFriend = $_SESSION['list_of_friends'];
     $listFollowed = $_SESSION['followed_list'];
-    $alreadyAsked = $pdo->query("SELECT * FROM friend_request WHERE id_user ='$userId_int' AND id_friend='$target' AND accept=0");
-    $alreadyAsked2 = $pdo->query("SELECT * FROM friend_request WHERE id_user ='$target' AND id_friend='$userId_int AND accept=0");
+    $alreadyAsked = $pdo->query("SELECT * FROM friend_request WHERE id_user ='$userId_int' AND id_friend='$target' AND accept=FALSE");
+    $alreadyAsked2 = $pdo->query("SELECT * FROM friend_request WHERE id_user ='$target' AND id_friend='$userId_int' AND accept=FALSE");
     foreach($listFriend as $id_friend) {
         if ($target == $id_friend) {
                 echo '<option value="unfriend">Ne plus être ami avec cette personne</option>';
             $friend = true;
-        } else if ($alreadyAsked->rowCount() >= 0) {
-            echo '<option value="befriend">Vous avez déjà envoyé une demande d\'ami</option>';
-        } else if ($alreadyAsked2->rowCount() >= 0) {
-            echo '<option value="befriend">On vous a déjà envoyé une demande d\'ami</option>';
+        } else if ($alreadyAsked->rowCount() != 0) {
+            echo '<option value="alreadyAsked">Vous avez déjà envoyé une demande d\'ami</option>';
+        } else if ($alreadyAsked2->rowCount() != 0) {
+            echo '<option value="alreadyAsked">On vous a déjà envoyé une demande d\'ami</option>';
         } else {
             echo '<option value="befriend">Demander en ami</option>';
         }          
@@ -84,8 +85,8 @@ function followBefriend ($input, $target) {
     if (isset($input)) {
         switch($input) {
             case "follow":
-                $pdo->exec("INSERT INTO followed_list (id_user, id_followed, unfollow) VALUES (:id_user, :id_target, 0);
-                UPDATE user SET followed_list=CONCAT(followed_list, ' ',:id_target) WHERE id_user=:id_user ");
+                $req = "INSERT INTO followed_list (id_user, id_followed, unfollow) VALUES (:id_user, :id_target, 0);
+                UPDATE user SET followed_list=CONCAT(followed_list, ' ',:id_target) WHERE id_user=:id_user ";
                 $follow = $pdo->prepare($req);
                 $follow->bindValue(':id_user', $userId_int);
                 $follow->bindValue(':id_target', $target);
@@ -100,9 +101,20 @@ function followBefriend ($input, $target) {
                 break;
             case "unfollow":
                 //DELETE FROM followed_list WHERE id_user= '$userId_int' and id_followed='$target';
-                $pdo->exec("UPDATE user SET followed_list=REPLACE(followed_list,' $target ', ' ') WHERE id_user='$userId_int';
-                            UPDATE user SET followed_list =INSERT(followed_list, LOCATE(' $target ', followed_list), CHAR_LENGTH(' $target'), '') WHERE id_user='$userId_int';
-                            UPDATE user SET followed_list =REVERSE(INSERT(REVERSE(followed_list), LOCATE(REVERSE('$target '), REVERSE(followed_list)), CHAR_LENGTH('$target '), '')) WHERE id_user='$userId_int';");
+                // $pdo->exec("UPDATE user SET followed_list=REPLACE(followed_list,' $target ', ' ') WHERE id_user='$userId_int';
+                //             UPDATE user SET followed_list =INSERT(followed_list, LOCATE(' $target ', followed_list), CHAR_LENGTH(' $target'), '') WHERE id_user='$userId_int';
+                //             UPDATE user SET followed_list =REVERSE(INSERT(REVERSE(followed_list), LOCATE(REVERSE('$target '), REVERSE(followed_list)), CHAR_LENGTH('$target '), '')) WHERE id_user='$userId_int';");
+                $req = "UPDATE user SET followed_list=REPLACE(followed_list, :doubleSpace, ' ') WHERE id_user=:id_user;
+                UPDATE user SET followed_list=INSERT(followed_list, LOCATE(:doubleSpace, followed_list), CHAR_LENGTH(:spaceLeft), '') WHERE id_user=:id_user;
+                UPDATE user SET followed_list =REVERSE(INSERT(REVERSE(followed_list), LOCATE(REVERSE(:spaceRight), REVERSE(followed_list)), CHAR_LENGTH(:spaceRIGHT), '')) WHERE id_user=:id_user";
+                $unfollow = $pdo->prepare($req);
+                $doubleSpace = " ".$target." ";
+                $spaceLeft = " ".$target;
+                $spaceRight = $target." ";
+                $unfollow->bindValue(':doubleSpace', $doubleSpace);
+                $unfollow->bindValue(':spaceLeft', $spaceLeft);
+                $unfollow->bindValue(':spaceRight', $spaceRight);
+                $unfollow->execute();
                 break;
             case "unfriend":
                 $pdo->exec("DELETE FROM friend_request WHERE id_friend_1st= '$userId_int' and id_friend_2nd='$target';
@@ -198,8 +210,8 @@ function createPost($createPostSQL) {
 
 function showPosts($showPostSQL) {
     global $pdo, $username;
-    //on affiche les posts
-    $r2 = $pdo->query($showPostSQL);
+    //on affiche les post
+    $r2= $pdo->query($showPostSQL);
     while($allPost = $r2->fetch(PDO::FETCH_ASSOC)) {
         $profilePicture = $pdo->query("SELECT photo_link FROM user WHERE id_user = '$allPost[id_author]' ");
         $profilePicture = $profilePicture->fetch();

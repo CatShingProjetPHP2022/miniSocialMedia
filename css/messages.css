@@ -1,0 +1,19 @@
+html{
+background-color:teal;
+}
+.conversation{
+width:80vw;
+height:80vh;
+display:flex;
+justify-content:space-between;
+margin: 0;
+}
+.champMsgSender{
+    width: 25vw;
+    height: 80%;
+
+}
+.champMsgReceive{
+    width: 25vw;
+    height: 80%;
+}

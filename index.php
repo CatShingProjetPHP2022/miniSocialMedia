@@ -23,7 +23,9 @@ $username = $_SESSION['user']['username'];
     <link rel="stylesheet" href="css/reset.css">
 </head>
 <body>
-    <?php getNav(); ?>
+    <?php getNav(); 
+    echo "<br>";
+    echo var_dump($_SESSION["list_of_friends"])?>
     <div class="main <?php if (isset($_GET["confirmSearch"])) {echo "results-display";} ?>">
         <div class="container-notifications">
                 <?php 
