@@ -22,18 +22,17 @@ $content ='';
 function getNav() {
     ?>
         <header>
-            <img src="<?php echo $_SESSION['user']['photo_link']?>" alt="profile_picture">
+            <img src="<?php echo $_SESSION['user']['photo_link']?>" alt="profile_picture" class="pp_preview">
             <form class ="search-bar" name="search" method="get" action="">
                 <input type="text" name="searchRequest" value="<?php if (isset($_GET["searchRequest"])) {echo $_GET["searchRequest"];} ?>" placeholder="">
                 <input type="submit" name="confirmSearch" value="Rechercher">
             </form>
             <nav>
-                <a href="index.php">Accueil</a>
-                <a href="profile.php">Mon profil</a>
-                <li>Notifications</li>
-                <a href="messages.php">Messages</a>
+                <a href="index.php"><img src="images/house.svg" alt="home"></a>
+                <a href="profile.php"><img src="images/message.svg" alt="message"></a>
+                <a href="messages.php"><img src="" alt=""></a>
                 <?php if(isset($_SESSION["user"])) { ?>
-                <a href="?action=déconnexion">Se déconnecter</a>
+                <a href="?action=déconnexion"><img src="" alt="">Se déconnecter</a>
                 <?php } ?>
             </nav>
         </header>
@@ -192,7 +191,8 @@ function createPost($createPostSQL) {
         </div> -->
         <!-- Pour poster -->
         <form class="form-create-post" name="create-post" method="post">
-            <input type="text" name="content-post">
+            <input type="text" name="content-post" required>
+            <input type="file" name="photo_link_post">
             <input type="submit" value="Poster !">
         </form>
         <!-- requête pour créer un post -->
@@ -202,6 +202,13 @@ function createPost($createPostSQL) {
                 if (isset($_POST["content-post"])) {
                     // Gestion d'erreur pour les ""
                     $content= addslashes($_POST['content-post']);
+                    // Lien par défaut qui mène nulle part
+                    $_POST["photo_link_post"] = "aupif/url/photo.jpeg";
+                    // Lien pour rajouter notre photo si il y en a une à rajouter
+                    if (!file_exists($_POST["photo_link_post"])) {
+                        $photo_link2="photo_link_post";
+                        $_POST["photo_link_post"] = uploadPicture($photo_link2);
+                    }
                     // Requete pour créer le poste
                     $pdo->exec($createPostSQL);
                 }
@@ -217,23 +224,11 @@ function showPosts($showPostSQL) {
         $profilePicture = $profilePicture->fetch();
         ?><div class="container_post_single">
                 <a href="profile.php?profil=<?php echo $allPost['id_author'] ?>"><?php if ($allPost['author_username']==$username) { echo "Moi";} else { echo $allPost['author_username'];}?></a>
-                <img src="<?php echo $profilePicture[0];?>" alt="image de profil">
+                <img class="profil-picture" src="<?php echo $profilePicture[0];?>" alt="image de profil">
+                <?php if($allPost['photo_link'] != "aupif/url/photo.jpeg"){ echo "<img class='image-post' src=".$allPost['photo_link']." alt='image du post'>"; } ?>
                 <p><?php echo $allPost['content'];?></p>
                 <p><?php echo $allPost['date'];?></p>
-                <!-- Rajout du bouton follow/befriend si l'auteur du poste n'est pas l'utilisateur -->
                 <?php 
-                // C'était une mauvaise idée de rajouter un bouton follow/demande d'ami dans chaque post 
-                // alors qu'on peut directement cliquer sur le profil pour ça
-
-                // if ($allPost['author_username']!= $username) { 
-                //     $idForm = "follow_friend_request_".$allPost['id_post'];
-                //     echo '<form method="post"> 
-                //             <select name="'; echo $idForm.'" class="btn-follow-befriend">';
-                //                 followBefriend($_POST["$idForm"], $allPost['id_author']);
-                //     echo    '</select> <input type="submit" value="Soumettre"> 
-                //             </form>';
-                // };
-
                 comments($allPost['id_post']);
         echo "</div>";
     }
