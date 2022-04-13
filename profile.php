@@ -13,10 +13,10 @@ $username = $_SESSION['user']['username'];
 if(isset($_GET['profil']) && is_int(intval($_GET["profil"]))) {
     $userProfileId = intval($_GET["profil"]);
     $u = $pdo->query("SELECT * FROM user WHERE id_user = '$userProfileId' ");
-    $profile = $u->fetch();
-    $name = $profile["username"];
+    $profile = $u->fetchAll(PDO::FETCH_ASSOC|PDO::FETCH_UNIQUE);
+    $name = $profile[$userProfileId]["username"];
     $pageTitle = "Profil de ".$name;
-    $photo = $profile["photo_link"];
+    $photo = $profile[$userProfileId]["photo_link"];
 } else {
     $userProfileId = $userId_int;
     $name = $username;
@@ -37,20 +37,25 @@ if(isset($_GET['profil']) && is_int(intval($_GET["profil"]))) {
     <link rel="stylesheet" href="css/reset.css">
 </head>
 <body>
-    <?php getNav(); ?>
+    <?php getNav(); 
+    echo "<br>";
+    echo "Abonnements".var_dump($_SESSION['followed_list']);
+    echo "<br>";
+    echo "Amis".var_dump($_SESSION['list_of_friends']);
+    echo "<br>";
+    ?>
     <div class="profile-container">
         <img src="<?php echo $photo; ?>" alt="">
         <p><?php echo $name; ?></p>
         <?php if (intval($userProfileId) != $userId_int ){
         ?><form action="" method="post">
             <select name="follow_friend_request" class="btn-follow-befriend">
-                <?php followBefriend($_POST["follow_friend_request"], $userProfileId); ?>
+                <?php followBefriend($_POST["follow_friend_request"], $userProfileId);?>
             </select>
             <input type="submit" value="Soumettre">
         </form> <?php } ?>
     </div>
     <div class="main">
-        <br><br>
         <section class="container-allPost">
             <?php
             // Tres longue requete qui va chercher les posts de l'utilisateur, des comptes qu'il suit plus ceux de ses amis pour afficher les 10 premiers et les trier du plus récent au plus ancient

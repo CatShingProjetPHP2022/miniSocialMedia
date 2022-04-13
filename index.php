@@ -23,29 +23,29 @@ $username = $_SESSION['user']['username'];
     <link rel="stylesheet" href="css/reset.css">
 </head>
 <body>
-    <?php getNav(); 
+    <?php getNav();
     echo "<br>";
-    echo var_dump($_SESSION["list_of_friends"])?>
-    <div class="main <?php if (isset($_GET["confirmSearch"])) {echo "results-display";} ?>">
+    echo "Abonnements".var_dump($_SESSION['followed_list']);
+    echo "<br>";
+    echo "Amis".var_dump($_SESSION['list_of_friends']);
+    echo "<br>";
+    // echo var_dump($updateSession);
+    ?>
+    <div class="main">
         <div class="container-notifications">
                 <?php 
                     $n = $pdo->query("SELECT * FROM friend_request WHERE accept = 0 AND id_friend='$userId_int' ORDER BY date DESC LIMIT 0,10 ");
                     while($allNotif = $n->fetch(PDO::FETCH_ASSOC)) {
+                        $nameReq = $pdo->query("SELECT username FROM user WHERE id_user = '$allNotif[id_user]' ")->fetchColumn();
                         echo '<div class="single-notification">';
-                            echo "<p>"; echo $allNotif['id_user']."</p>";
+                            echo "<p>"; echo $nameReq."</p>";
                             echo "<p>"; echo $allNotif['date']."</p>";
                             $idNotif = "befriend".$allNotif['id_friend_request'];
                             echo "<form method=post>";
                                 echo '<input type="submit" name="'; echo $idNotif.'" value="Accepter la demande d\'ami">';
                                 if ($_POST) {
                                     if ($_POST["$idNotif"]) {
-                                        $fr = "UPDATE friend_request SET accept=1 WHERE id_user=:id_sender AND id_friend=:id_user;
-                                        UPDATE user SET list_of_friends=CONCAT(list_of_friends, ' ', :id_user) WHERE id_user=:id_sender;
-                                        UPDATE user SET list_of_friends=CONCAT(list_of_friends, ' ', :id_sender) WHERE id_user=:id_user";
-                                        $acceptFrienship = $pdo->prepare($fr);
-                                        $acceptFrienship->bindValue(':id_user', $userId_int);
-                                        $acceptFrienship->bindvalue(':id_sender', $allNotif['id_user']);
-                                        $acceptFrienship->execute();
+                                        friendshipAccept($allNotif['id_user'], $_POST["$idNotif"]);
                                     }
                                 }
                             echo "</form>";
@@ -56,9 +56,9 @@ $username = $_SESSION['user']['username'];
         <br><br>
         <section class="container-allPost">
             <?php
-            createPost("INSERT INTO post(id_author, author_username, date, photo_link, content) VALUES ('$userId_int', '$username',NOW(), '$_POST[photo_link_post]', '$content')");
+            createPost("INSERT INTO post(id_author, author_username, date, photo_link, content) VALUES ('$userId_int', '$username',NOW(), :photo_link_post, :content)");
             // Tres longue requete qui va chercher les posts de l'utilisateur, des comptes qu'il suit plus ceux de ses amis pour afficher les 10 premiers et les trier du plus récent au plus ancient
-            showPosts("SELECT * FROM post WHERE id_author = '$userId_int' OR id_author IN (SELECT id_followed FROM `followed_list` WHERE id_user = '$userId_int') OR id_author IN (SELECT id_user FROM `friend_request` WHERE id_friend = '$userId_int' AND accept=1) OR id_author IN (SELECT id_friend FROM `friend_request` WHERE id_user = '$userId_int' AND accept=1) ORDER BY date DESC LIMIT 0,30");
+            showPosts("SELECT * FROM post WHERE id_author = '$userId_int' OR id_author IN (SELECT id_followed FROM followed_list WHERE id_user = '$userId_int') OR id_author IN (SELECT id_user FROM friend_request WHERE id_friend = '$userId_int' AND accept=1) OR id_author IN (SELECT id_friend FROM friend_request WHERE id_user = '$userId_int' AND accept=1) ORDER BY date DESC LIMIT 0,30");
             ?>
         </section>        
     </div>
