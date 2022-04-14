@@ -1,6 +1,5 @@
 <?php include("functions.php");
 
-
 // Si l'utilisateur n'est pas connecté on lui demande de se connecter
 if(!isset($_SESSION['user'])) {
 	header('location:connection.php');
@@ -19,8 +18,9 @@ $username = $_SESSION['user']['username'];
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Accueil</title>
-    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/stylefinal.css">
 </head>
 <body>
     <?php getNav();
@@ -32,14 +32,15 @@ $username = $_SESSION['user']['username'];
     // echo var_dump($updateSession);
     ?>
     <div class="main">
-        <div class="container-notifications">
+        <div class="container-friends">
                 <?php 
                     $n = $pdo->query("SELECT * FROM friend_request WHERE accept = 0 AND id_friend='$userId_int' ORDER BY date DESC LIMIT 0,10 ");
                     while($allNotif = $n->fetch(PDO::FETCH_ASSOC)) {
-                        $nameReq = $pdo->query("SELECT username FROM user WHERE id_user = '$allNotif[id_user]' ")->fetchColumn();
-                        echo '<div class="single-notification">';
-                            echo "<p>"; echo $nameReq."</p>";
-                            echo "<p>"; echo $allNotif['date']."</p>";
+                        $nameReq = $pdo->query("SELECT username, photo_link FROM user WHERE id_user = '$allNotif[id_user]' ")->fetchAll(PDO::FETCH_ASSOC);
+                        echo '<div class="single-friends">';
+                            echo "<a href='profile.php?profil=".$allNotif[0]["id_user"]."'>".$nameReq[0]["username"]."</a>";
+                            echo "<img class='profil-picture' src='";echo $nameReq[0]["photo_link"]."' alt='photo de profil'>";
+                            echo "<p>"; echo "Envoyé le ".$allNotif['date']."</p>";
                             $idNotif = "befriend".$allNotif['id_friend_request'];
                             echo "<form method=post>";
                                 echo '<input type="submit" name="'; echo $idNotif.'" value="Accepter la demande d\'ami">';
@@ -50,7 +51,14 @@ $username = $_SESSION['user']['username'];
                                 }
                             echo "</form>";
                         echo "</div>";
-                    } 
+                    }
+                    $f = $pdo->query("SELECT * FROM user where id_user IN (SELECT id_user FROM friend_request WHERE id_friend = '$userId_int') OR id_user IN (SELECT id_friend FROM friend_request WHERE id_user='$userId_int')");
+                    while($allFriends = $f->fetch(PDO::FETCH_ASSOC)) {
+                        echo '<div class="single-friends">';
+                            echo "<a href='profile.php?profil=".$allFriends["id_user"]."'>".$allFriends["username"]."</a>";
+                            echo "<img class='profil-picture' src='";echo $allFriends["photo_link"]."' alt='photo de profil'>";
+                        echo "</div>";
+                    }
                 ?>
         </div>
         <br><br>
@@ -62,6 +70,5 @@ $username = $_SESSION['user']['username'];
             ?>
         </section>        
     </div>
-
 </body>
 </html>

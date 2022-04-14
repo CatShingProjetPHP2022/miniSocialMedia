@@ -51,7 +51,7 @@ header {
         display: none;
     }
 
-    .single-notification {
+    .single-friends {
         margin-bottom: 10px; 
         border: solid red 2px;
         padding: 8px;
@@ -103,7 +103,7 @@ header {
 
     .profile-container > img {
         height: 50%;
-        object-fit: contain;
+        object-fit: cover;
     }
 
     .signup_form {

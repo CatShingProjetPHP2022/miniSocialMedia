@@ -23,65 +23,73 @@ $username = $_SESSION['user']['username'];
     <link rel="stylesheet" href="css/reset.css">
     <link rel="stylesheet" href="css/message.css">
     <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/stylefinal.css">
 </head>
 <body>
 <?php getNav(); ?>
 <section class ="messagerie">
-
-    <div class = "champsFriends">
-        <h2>Catshing</h2>
+    <div class="titleMessagerie">
+        <h1><?php echo $username?></h1>
+    </div>
+    <div class="containerMessagerie">
         
-    <?php
-    
+        <div class = "champsFriends">
+            <form method="get">
+                <input type="text" name="searchFriends">
+                <input type="submit" name="search">
+            </form>
+            
+        <?php
+        
 
-    for ($i=0; $i < count($_SESSION['list_of_friends']); $i++) { 
-        $friend =$_SESSION['list_of_friends'][$i];
-        $tableFriendsUser = $pdo->query("SELECT username FROM user WHERE id_user = '$friend' ");
-        $friendsUser = $tableFriendsUser -> fetch();
-        ?>
-        <ul>
-            <?php
-            echo "<li><a href=?FRIENDS=$friendsUser[0]>$friendsUser[0]</a></li>";
+        for ($i=0; $i < count($_SESSION['list_of_friends']); $i++) { 
+            $friend =$_SESSION['list_of_friends'][$i];
+            $tableFriendsUser = $pdo->query("SELECT username FROM user WHERE id_user = '$friend' ");
+            $friendsUser = $tableFriendsUser -> fetch();
             ?>
-        </ul>
-        <?php
-    }
-    ?>
-    </div>
-
-
-    <div class = "conversation">
-        <div class = "champMsgSender">
-        <?php
-            if ($_GET['FRIENDS']) {
-
-                $friendsSelect = $pdo -> query("SELECT id_user FROM user WHERE username = '$_GET[FRIENDS]'");
-                $idFriends = $friendsSelect -> fetch();
-                $msgOfFriends = $pdo -> query("SELECT content FROM message WHERE id_recipient = $idFriends[0] AND id_sender ='$userId_int' ");
-                while($msgFriends = $msgOfFriends -> fetch(PDO::FETCH_ASSOC)){
-                    echo $msgFriends['content'];
-                    echo '<br>';
-                }
-            }
-            if ($_GET['FRIENDS']!="") {
-                $isSeeing = $pdo -> exec("UPDATE message SET is_read = 'READ' WHERE id_sender = $idFriends[0]");
-            }
+            <ul>
+                <?php
+                echo "<li><a href=?FRIENDS=$friendsUser[0]>$friendsUser[0]</a></li>";
+                ?>
+            </ul>
+            <?php
+        }
         ?>
         </div>
-        <div class = "champMsgReceive">
-        <?php
-            if ($_GET['FRIENDS']) {
 
-                $msgOfSelf = $pdo -> query("SELECT content FROM message WHERE id_recipient = $userId_int AND id_sender = $idFriends[0]");
-                while($msgSelf = $msgOfSelf -> fetch(PDO::FETCH_ASSOC)){
-                    echo $msgSelf['content'];
-                    echo '<br>';
+
+        <div class = "conversation">
+            <div class = "champMsgSender">
+            <?php
+                if ($_GET['FRIENDS']) {
+
+                    $friendsSelect = $pdo -> query("SELECT id_user FROM user WHERE username = '$_GET[FRIENDS]'");
+                    $idFriends = $friendsSelect -> fetch();
+                    $msgOfFriends = $pdo -> query("SELECT content FROM message WHERE id_recipient = $idFriends[0] AND id_sender ='$userId_int' ");
+                    while($msgFriends = $msgOfFriends -> fetch(PDO::FETCH_ASSOC)){
+                        echo $msgFriends['content'];
+                        echo '<br>';
+                    }
                 }
-            }   
-        ?>
+                if ($_GET['FRIENDS']!="") {
+                    $isSeeing = $pdo -> exec("UPDATE message SET is_read = 'READ' WHERE id_sender = $idFriends[0]");
+                }
+            ?>
+            </div>
+            <div class = "champMsgReceive">
+            <?php
+                if ($_GET['FRIENDS']) {
+
+                    $msgOfSelf = $pdo -> query("SELECT content FROM message WHERE id_recipient = $userId_int AND id_sender = $idFriends[0]");
+                    while($msgSelf = $msgOfSelf -> fetch(PDO::FETCH_ASSOC)){
+                        echo $msgSelf['content'];
+                        echo '<br>';
+                    }
+                }   
+            ?>
+            </div>
         </div>
     </div>
-
 
     <div class = "champEnvoi">
         <form  method="post">

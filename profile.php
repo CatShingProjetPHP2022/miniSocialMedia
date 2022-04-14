@@ -33,8 +33,9 @@ if(isset($_GET['profil']) && is_int(intval($_GET["profil"]))) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title><?php echo $pageTitle ?></title>
-    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/style.css">
+    <link rel="stylesheet" href="css/stylefinal.css">
 </head>
 <body>
     <?php getNav(); 
@@ -47,11 +48,15 @@ if(isset($_GET['profil']) && is_int(intval($_GET["profil"]))) {
     <div class="profile-container">
         <img src="<?php echo $photo; ?>" alt="">
         <p><?php echo $name; ?></p>
-        <?php if (intval($userProfileId) != $userId_int ){
+        <?php if (intval($userProfileId) != $userId_int) {
         ?><form action="" method="post">
             <select name="follow_friend_request" class="btn-follow-befriend">
                 <?php followBefriend($_POST["follow_friend_request"], $userProfileId);?>
             </select>
+            <input type="submit" value="Soumettre">
+        </form> <?php } ?>
+        <form action="" method="post">
+            <input type="file" name="change-photo" class="btn-follow-befriend">
             <input type="submit" value="Soumettre">
         </form> <?php } ?>
     </div>

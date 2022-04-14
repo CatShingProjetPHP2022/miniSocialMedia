@@ -38,20 +38,26 @@ $content ='';
 
 function getNav() {
     ?>
-        <header>
-            <img src="<?php echo $_SESSION['user']['photo_link']?>" alt="profile_picture" class="pp_preview">
-            <form class ="search-bar" name="search" method="get" action="">
-                <input type="text" name="searchRequest" value="<?php if (isset($_GET["searchRequest"])) {echo $_GET["searchRequest"];} ?>" placeholder="">
-                <input type="submit" name="confirmSearch" value="Rechercher">
+        <header class="overal_header">
+            <div class="header-container">
+            <div class="logo-container">
+                <span>CATSHING</span>
+            </div>
+        <form class ="search-bar" name="search" method="get" action="">
+                <input type="text" name="searchRequest" value="<?php if (isset($_GET["searchRequest"])) {echo $_GET["searchRequest"];} ?>" placeholder="Rechercher">
+                <input type="submit" name="confirmSearch" value="GO">
             </form>
-            <nav>
-                <a href="index.php"><img src="images/house.svg" alt="home"></a>
-                <a href="profile.php">Mon profil</a>
-                <a href="messages.php"><img src="images/message.svg" alt="message"><img src="" alt=""></a>
+            <nav class="icons">
+                <a href="index.php"><img src="images/assets/house.svg" alt="home"></a>
+                <a href="messages.php"><img src="images/assets/message.svg" alt="message"></a>
                 <?php if(isset($_SESSION["user"])) { ?>
-                <a href="?action=déconnexion"><img src="" alt="">Se déconnecter</a>
-                <?php } ?>
+                <a href="?action=déconnexion">Se déconnecter</a>
+                <?php } /*ELSE RAJOUTER UNE OPTION QUI AFFICHERAIT "SE CONNECTER" */ ?>
+                <div class="pp_container">
+                    <a href="profile.php"><img src="<?php echo $_SESSION['user']['photo_link']?>" alt="profile_picture" class="pp_preview"></a>
+                </div>
             </nav>
+            </div>
         </header>
         <a href=""></a>
     <?php
@@ -244,7 +250,6 @@ function createPost($createPostSQL) {
                 }
             }
 }
-
 function showPosts($showPostSQL) {
     global $pdo, $username;
     //on affiche les post
