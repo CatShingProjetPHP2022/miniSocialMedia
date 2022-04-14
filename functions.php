@@ -46,8 +46,8 @@ function getNav() {
             </form>
             <nav>
                 <a href="index.php"><img src="images/house.svg" alt="home"></a>
-                <a href="profile.php"><img src="images/message.svg" alt="message"></a>
-                <a href="messages.php"><img src="" alt=""></a>
+                <a href="profile.php">Mon profil</a>
+                <a href="messages.php"><img src="images/message.svg" alt="message"><img src="" alt=""></a>
                 <?php if(isset($_SESSION["user"])) { ?>
                 <a href="?action=déconnexion"><img src="" alt="">Se déconnecter</a>
                 <?php } ?>

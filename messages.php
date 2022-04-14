@@ -57,11 +57,14 @@ $username = $_SESSION['user']['username'];
 
                 $friendsSelect = $pdo -> query("SELECT id_user FROM user WHERE username = '$_GET[FRIENDS]'");
                 $idFriends = $friendsSelect -> fetch();
-                $msgOfFriends = $pdo -> query("SELECT content FROM message WHERE id_recipient = $idFriends[0]");
+                $msgOfFriends = $pdo -> query("SELECT content FROM message WHERE id_recipient = $idFriends[0] AND id_sender ='$userId_int' ");
                 while($msgFriends = $msgOfFriends -> fetch(PDO::FETCH_ASSOC)){
                     echo $msgFriends['content'];
                     echo '<br>';
                 }
+            }
+            if ($_GET['FRIENDS']!="") {
+                $isSeeing = $pdo -> exec("UPDATE message SET is_read = 'READ' WHERE id_sender = $idFriends[0]");
             }
         ?>
         </div>
@@ -69,7 +72,7 @@ $username = $_SESSION['user']['username'];
         <?php
             if ($_GET['FRIENDS']) {
 
-                $msgOfSelf = $pdo -> query("SELECT content FROM message WHERE id_recipient = $userId_int");
+                $msgOfSelf = $pdo -> query("SELECT content FROM message WHERE id_recipient = $userId_int AND id_sender = $idFriends[0]");
                 while($msgSelf = $msgOfSelf -> fetch(PDO::FETCH_ASSOC)){
                     echo $msgSelf['content'];
                     echo '<br>';
@@ -88,18 +91,13 @@ $username = $_SESSION['user']['username'];
         </form>
 
     <?php
-        if ($_POST['envoyer_message']) {
+        $friendsLast = $_GET['FRIENDS'];
+        if ($_POST['envoyer_message'] && $_POST['message']!="") {
             $_POST['message'] = addslashes($_POST['message']);
-            
-            if ($_POST['message']!="") {
-                $pdo -> exec("INSERT INTO message (id_sender,id_recipient,dateEmission,content) VALUES ('$userId_int','$idFriends[0]',NOW(),'$_POST[message]')");
-                //  $var1 -> exec("INSERT INTO 'message' (id_sender,id_recepient,content) VALUES ('$userId_int','$idFriends[0]','$_POST[message]')");
-                echo "$userId_int ,$idFriends[0] ,$_POST[message]";
+            $pdo -> exec("INSERT INTO message (id_sender,id_recipient,dateEmission,content,is_read) VALUES ('$userId_int','$idFriends[0]',NOW(),'$_POST[message]','NOREAD')");
+            $_POST['message']="";
+            header("location:messages.php?FRIENDS=$friendsLast");
             }
-            
-        $_POST['message']="";
-        }
-
     ?>
     </div>
 </section>    
