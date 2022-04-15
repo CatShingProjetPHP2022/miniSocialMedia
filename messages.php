@@ -28,12 +28,12 @@ $username = $_SESSION['user']['username'];
     
     <div class="containerMessagerie">
         
-        <div class = "champsFriends">
+        <!-- <div class = "champsFriends">
             <form method="get">
                 <input type="text" name="searchFriends">
                 <input type="submit" name="search">
             </form>
-            
+             -->
         <?php
         
 
@@ -88,9 +88,9 @@ $username = $_SESSION['user']['username'];
 
     <div class = "champEnvoi">
         <form  method="post">
-            <label for="message">Message</label>
-            <input type="text" name="message"></input>
-            <input type="submit" name="envoyer_message">
+            <label for="message" class="btn-message" >Message</label>
+            <input type="text" name="message" class="input-message"></input>
+            <input type="submit" name="envoyer_message" class="send-message">
         </form>
 
     <?php

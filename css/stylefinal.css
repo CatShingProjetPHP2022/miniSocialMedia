@@ -55,11 +55,13 @@ button {
 	height: 100%;
 	text-align: center;
 }
-
-.user_info_fields {
+.signup_form button{
+	margin-block: 10px;
+}
+.info_fields {
 	border: solid 1px lightgray;
 	padding: 12px 15px;
-	margin: 8px 0;
+	margin:  8px 0;
 	width: 100%;
 }
 .container {
@@ -394,7 +396,7 @@ height: auto;
 			padding-bottom: 37px;
 		}
 		.form-add-comment > input[type="text"]{
-			width: 70%;
+			width: 60%;
 			height: 40px;
 			outline: none;
 			border :1px solid white;
@@ -748,6 +750,30 @@ gap: 40px;
 	text-decoration: none;
 	color:black;
 }
+
+.input-message {
+	width: 40vw;
+	height: 12vh;
+	font-size: 1.1rem;
+	border-radius: 5%;
+	text-align: start;
+}
+.upload_photo{
+	display:none;
+}
+.btn-message {
+	width: 20vw !important;
+	padding: 5px;
+	font-size: 1.3rem;
+}
+
+.send-message {
+	width: 10vw;
+	padding: 5px;
+	font-size: 1.3rem;
+}
+
+
 /*header oumi*/
 
 /* SECTION MEDIA QUERIES*/
@@ -755,20 +781,6 @@ gap: 40px;
 	.search-bar{
 		display: none;
 	}
-	.container-all-comments{
-		width: 80px;
-		height: 70px;
-	}
-	.espace_commentaire{
-		display: none !important;
-	}
-	.form-add-comment{
-		flex-direction: row-reverse;
-	}
-	.add_new_post{
-		display:none !important;
-	}
-	.logo-container > span{
-		display: none !important;
-	}
 }/*SECTION MEDIA QUERIES*/
+
+

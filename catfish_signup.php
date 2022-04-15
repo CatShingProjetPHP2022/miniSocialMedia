@@ -83,19 +83,19 @@ if ($_POST) {
 	<div class="form-container sign-up-container">
 		<form method="post" class="signup_form" enctype="multipart/form-data">
 			<h1 class="connection">Inscription</h1>
-	
             <input type="text" name="username" placeholder="Identifiant" class="open_folder user_info_fields"/>
             <input type="email" name="email" placeholder="Email" class="input user_info_fields"/>
 			<input type="password" name="password" placeholder="Mot de passe" class="input user_info_fields"/>
             <label for="photo_link" style="margin-block:15px; background-color: #ff806a;">
                Choisir une photo
-            <input type="file" id="photo_link" name="photo_link" accept="image/png, image/jpg, image/jpeg" class="input"/>
+            <input type="file" id="photo_link" name="photo_link" accept="image/png, image/jpg, image/jpeg" class="upload_photo"/>
            </label>
-			<button>S'inscrire</button>
+			<!-- <button>S'inscrire</button> -->
             
-            <a href="signup_catfish.php" class="already_in">Déjà Inscrit ?</a>
-            <button style="margin-bottom:15px;">Connexion</button>
-            <span>S'inscrire avec </span>
+            <!-- <a href="signup_catfish.php" class="already_in">Déjà Inscrit ?</a> -->
+            <button type="submit">S'INSCRIRE</button>
+            <!-- <button style="margin-bottom:15px;">Connexion</button> -->
+            <button><a href="connection.php" style="text-decoration:none; color:white; font-weight: 600">SE CONNECTER</a></button>
             <div class="social-container">
 				<a href="#" class="social" class="link">
                     <img src="images/assets/icons8-twitter.svg" alt="twitter">

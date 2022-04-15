@@ -37,7 +37,7 @@ function getNav() {
             <nav class="icons">
                 <a href="index.php"><img src="images/assets/house.svg" alt="home"></a>
                 <a href="messages.php"><img src="images/assets/message.svg" alt="message"></a>
-                <?php $unredMessages = $pdo->query("SELECT COUNT(*) FROM `message` WHERE id_sender='$userId_int' AND is_read='NOREAD'")->fetchColumn();
+                <?php $unredMessages = $pdo->query("SELECT COUNT(*) FROM `message` WHERE id_recipient='$userId_int' AND is_read='NOREAD'")->fetchColumn();
                 //montre le nbr de messages non lus
                 if ($unredMessages > 0) {
                     echo "<div class='RENTRER NOM DE CLASSE'>".$unredMessages."</div>";
@@ -74,27 +74,28 @@ function followBefriend ($input, $target) {
     }
     $alreadyAsked = $pdo->query("SELECT COUNT(*) FROM friend_request WHERE id_user ='$userId_int' AND id_friend='$target' AND accept=FALSE")->fetchColumn();
     if ($alreadyAsked > 0) {
-        echo '<option value="alreadyAsked">Vous avez déjà envoyé une demande d\'ami</option>';
+        echo '<option value="alreadyAsked">Annuler la demande d\'ami</option>';
+        // echo '<option value="alreadyAsked">Vous avez déjà envoyé une demande d\'ami</option>';
     }
     $alreadyAsked2 = $pdo->query("SELECT  COUNT(*) FROM friend_request WHERE id_user ='$target' AND id_friend='$userId_int' AND accept=FALSE")->fetchColumn();
     if ($alreadyAsked2 > 0) {
-        echo '<option value="alreadyAsked">On vous a déjà envoyé une demande d\'ami</option>';
+        echo '<option value="alreadyAsked2">On vous a déjà envoyé une demande d\'ami</option>';
     }
     if ($friend == 0) {
         if ( $alreadyAsked == 0  && $alreadyAsked2 == 0) {
             echo '<option value="befriend">Demander en ami</option>';
         }
-        $followed = 0;
-        foreach($listFollowed as $id_followed) {
-            if ($target == $id_followed) {
-                // Je suis déjà cette personne
-                $followed += 1;
-                echo '<option value="unfollow">Se désabonner</option>';
-            }
-        }
-        if ($followed == 0) {
-            echo '<option value="follow">S\'abonner</option>';
-        }
+        // $followed = 0;
+        // foreach($listFollowed as $id_followed) {
+        //     if ($target == $id_followed) {
+        //         // Je suis déjà cette personne
+        //         $followed += 1;
+        //         echo '<option value="unfollow">Se désabonner</option>';
+        //     }
+        // }
+        // if ($followed == 0) {
+        //     echo '<option value="follow">S\'abonner</option>';
+        // }
     }
     //variables pour requetes sql
     $doubleSpace = " ".$target." ";
@@ -147,6 +148,13 @@ function followBefriend ($input, $target) {
                 $sth->bindValue(':spaceLeft', $spaceLeft, PDO::PARAM_STR);
                 $sth->bindValue(':doubleSpace2', $doubleSpace2, PDO::PARAM_STR);
                 $sth->bindValue(':spaceLeft2', $spaceLeft2, PDO::PARAM_STR);
+                $sth->execute();
+                break;
+            case "alreadyAsked":
+                $req = "DELETE FROM friend_request WHERE id_user=:id_user and id_friend=:id_target";
+                $sth = $pdo->prepare($req);
+                $sth->bindValue(':id_user', $userId_int, PDO::PARAM_INT);
+                $sth->bindValue(':id_target', $target, PDO::PARAM_INT);
                 $sth->execute();
                 break;
         }
