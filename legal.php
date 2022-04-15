@@ -239,7 +239,7 @@
         </div>
     </main>
     <footer class="legal_footer">
-    <span class="copyright">© Catshing</span>
+    <span class="copyright">© Catshing 2022</span>
 </footer>
 </body>
 

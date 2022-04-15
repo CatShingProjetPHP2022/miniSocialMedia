@@ -39,12 +39,13 @@ if(isset($_GET['profil']) && is_int(intval($_GET["profil"]))) {
 </head>
 <body>
     <?php getNav(); 
-    echo "<br>";
-    echo "Abonnements".var_dump($_SESSION['followed_list']);
-    echo "<br>";
-    echo "Amis".var_dump($_SESSION['list_of_friends']);
-    echo "<br>";
+    // echo "<br>";
+    // echo "Abonnements".var_dump($_SESSION['followed_list']);
+    // echo "<br>";
+    // echo "Amis".var_dump($_SESSION['list_of_friends']);
+    // echo "<br>";
     ?>
+    <section class="profile-wrapper">
     <div class="profile-container">
         <img src="<?php echo $photo; ?>" alt="">
         <p><?php echo $name; ?></p>
@@ -55,16 +56,35 @@ if(isset($_GET['profil']) && is_int(intval($_GET["profil"]))) {
             </select>
             <input type="submit" value="Soumettre">
         </form> <?php } ?>
-        <form action="" method="post">
-            <input type="file" name="change-photo" class="btn-follow-befriend">
-            <input type="submit" value="Soumettre">
-        </form> <?php } ?>
+    <?php if ($userProfileId == $userId_int) { ?>
+        <form method="POST" enctype="multipart/form-data">
+            <input type="file" name="change_photo" class="btn-follow-befriend">
+            <input type="submit" name=upload value="Changer votre photo" style="float:left">
+        </form> 
+    <?php }
+        if (isset($_POST["upload"]) && $_POST["upload"]=="Changer votre photo") {
+            $nameChgForm ="change_photo";
+            $pictureAdress = newUploadPicture($nameChgForm);
+            $changePicture = $pdo->exec("UPDATE user SET photo_link = '$pictureAdress' WHERE id_user='$userId_int' ");
+        }
+    ?>
     </div>
+    </section>
+    <!-- <div>
+        <?php
+            // echo "test";
+            // echo var_dump($_FILES["change_photo"]);
+            // echo var_dump($pictureAdress);
+            // echo $_SESSION['message'];
+        ?>
+    </div> -->
     <div class="main">
         <section class="container-allPost">
             <?php
-            // Tres longue requete qui va chercher les posts de l'utilisateur, des comptes qu'il suit plus ceux de ses amis pour afficher les 10 premiers et les trier du plus récent au plus ancient
-            showPosts("SELECT * FROM post WHERE id_author = '$userProfileId' ORDER BY date DESC LIMIT 0,10");
+                if ($userProfileId == $userId_int) {
+                    createPost("INSERT INTO post(id_author, author_username, date, photo_link, content) VALUES (:id_user, :username, NOW(), :photo_link_post, :content)");
+                }
+                showPosts("SELECT * FROM post WHERE id_author = '$userProfileId' ORDER BY date DESC LIMIT 0,10");
             ?>
         </section>        
     </div>

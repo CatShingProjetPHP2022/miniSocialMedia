@@ -1,8 +1,11 @@
 <?php
-
-ini_set('display_errors', 1);
-ini_set('display_startup_errors', 1);
-error_reporting(E_ALL);
+//cacher les erreurs
+ini_set('display_errors', 0);
+ini_set('display_startup_errors', 0);
+error_reporting(0);
+// ini_set('display_errors', 1);
+// ini_set('display_startup_errors', 1);
+// error_reporting(E_ALL);
 //relier notre site à la database
 $pdo = new PDO('mysql:host=localhost;dbname=projet-php', 'root', 'root', array(PDO::ATTR_ERRMODE => PDO::ERRMODE_WARNING, PDO::MYSQL_ATTR_INIT_COMMAND => 'SET NAMES utf8'));
 // $pdo->setAttribute(PDO::MYSQL_ATTR_USE_BUFFERED_QUERY, false);
@@ -17,42 +20,31 @@ if(isset($_GET['action']) && $_GET['action']="deconnexion") {
 
 //je declare une variable qui me permettra d'afficher des messages pour l'utilisateur:
 $content ='';
-// $userId_int = intval($_SESSION['user']['id_user']);
-// $updateSession = $pdo->query("SELECT list_of_friends,followed_list FROM user WHERE id_user='$userId_int' ")->fetchAll(PDO::FETCH_ASSOC);
-// $_SESSION['list_of_friends'] = explode(" ",$updateSession[0]['list_of_friends']);
-// $_SESSION['followed_list'] = explode(" ",$updateSession[0]['followed_list']);
-
-// $updateFriends = $pdo->query("SELECT list_of_friends FROM user WHERE id_user='$userId_int' ");
-// if ($updateFriends) {
-//     while ($test = $updateFriends->fetch(PDO::FETCH_ASSOC)) {
-//         $_SESSION['list_of_friends'] = explode(" ",$test['list_of_friends']);
-//     }
-// }
-
-// $updateFollows = $pdo->query("SELECT followed_list FROM user WHERE id_user='$userId_int' ");
-// if ($updateFollows) {
-//     while ($test2 = $updateFollows->fetch(PDO::FETCH_ASSOC)) {
-//         $_SESSION['followed_list'] = explode(" ",$test2['followed_list']);
-//     }
-// }
 
 function getNav() {
+    global $userId_int, $pdo;
     ?>
         <header class="overal_header">
             <div class="header-container">
             <div class="logo-container">
-                <span>CATSHING</span>
+                <span><a href="index.php">CATSHING</a></span>
             </div>
-        <form class ="search-bar" name="search" method="get" action="">
+           
+        <form class ="search-bar" name="search" method="get">
                 <input type="text" name="searchRequest" value="<?php if (isset($_GET["searchRequest"])) {echo $_GET["searchRequest"];} ?>" placeholder="Rechercher">
-                <input type="submit" name="confirmSearch" value="GO">
+                <input type="submit" name="confirmSearch" value="GO" class="search-button">
             </form>
             <nav class="icons">
                 <a href="index.php"><img src="images/assets/house.svg" alt="home"></a>
                 <a href="messages.php"><img src="images/assets/message.svg" alt="message"></a>
-                <?php if(isset($_SESSION["user"])) { ?>
+                <?php $unredMessages = $pdo->query("SELECT COUNT(*) FROM `message` WHERE id_sender='$userId_int' AND is_read='NOREAD'")->fetchColumn();
+                //montre le nbr de messages non lus
+                if ($unredMessages > 0) {
+                    echo "<div class='RENTRER NOM DE CLASSE'>".$unredMessages."</div>";
+                }
+                if(isset($_SESSION["user"])) { ?>
                 <a href="?action=déconnexion">Se déconnecter</a>
-                <?php } /*ELSE RAJOUTER UNE OPTION QUI AFFICHERAIT "SE CONNECTER" */ ?>
+                <?php } /*ELSE RAJOUTER UNE OPTION QUI AFFICHERAIT "SE CONNECTER" - non il y a pas besoin,si on est pas connecter on est automatiquement redirigé vers la page de connexion, on peut pas rentrer sans se connecter */ ?>
                 <div class="pp_container">
                     <a href="profile.php"><img src="<?php echo $_SESSION['user']['photo_link']?>" alt="profile_picture" class="pp_preview"></a>
                 </div>
@@ -65,7 +57,6 @@ function getNav() {
         global $pdo;
         if(isset($_GET["confirmSearch"]) && !empty(trim($_GET["searchRequest"]))) {
             header("location:search_results.php?searchRequest=".trim($_GET["searchRequest"]));
-            // ."&confirmSearch=Rechercher"
         }
 }
 
@@ -178,7 +169,9 @@ function uploadPicture ($file) {
     if(isset($_FILES["$file"]["name"]) && ($_FILES["$file"]["error"] == 0)) {
         // stockage de l'image
         $pictureName = preg_replace("/\s+/", "", (time().basename($_FILES["$file"]["name"])));
+        echo $pictureName;
         $adressPicture = "./images/".$pictureName;
+        echo $adressPicture;
         move_uploaded_file($_FILES["$file"]["tmp_name"], $adressPicture);
         // Renvoie le lien de l'adresse
         return $adressPicture;
@@ -190,12 +183,16 @@ function comments($idPost) {
     echo "<div class='container-all-comments'>";
         $uniqueNameForm = "content-comment-post".$idPost;
         ?>
+        <div class="espace_commentaire">
+            <p>Commentaire
+        </div>
         <form class="form-add-comment" name="comment" method="post">
             <input type="text" name="<?php echo $uniqueNameForm; ?>">
-            <input type="submit" value="Ecrire un commentaire">
+            <input type="submit" value=">">
         </form>
         <?php
         // Ecrire un commentaire
+        // wsh t'en es ou ?
         if(isset($_POST["$uniqueNameForm"])) {
             global $pdo, $username, $userId_int;
             $comment= addslashes($_POST["$uniqueNameForm"]);
@@ -204,14 +201,23 @@ function comments($idPost) {
         global $pdo, $username;
         $c = $pdo->query("SELECT * FROM comment WHERE id_post = '$idPost' ORDER BY date");
         // Montrer les commentaires
+        $com=0;
         while($allComments = $c->fetch(PDO::FETCH_ASSOC)) {
-            ?><div class="container_comment_single">
+            $com+=1;
+            ?>
+             
+            <div class="container_comment_single">
                 <p><?php if ($allComments['author_username']==$username) { echo "Moi";} else { echo $allComments['author_username'];}?></p>
                 <p><?php echo $allComments['content'];?></p>
                 <p><?php echo $allComments['date'];?></p>
             </div>
             <?php
         }
+        ?>
+        <div class="espace_commentaire">
+            <p>nombres de commentaire : <?php echo($com)?>
+        </div>
+        <?php
     echo "</div>";
 }
 
@@ -219,37 +225,37 @@ function createPost($createPostSQL) {
     global $pdo, $username, $userId_int;
         ?>
         <!-- Pour poster -->
-        <form class="form-create-post" name="create-post" method="post">
-            <input type="text" name="content-post" required>
-            <input type="file" name="photo_link_post">
-            <input type="submit" value="Poster !">
-        </form>
+        
         <!-- requête pour créer un post -->
         <?php 
         // var_dump($userId_int);
-            if($_POST) {
-                if (isset($_POST["content-post"]) && trim($_POST["content-post"]) != "") {
-                    // Gestion d'erreur pour les ""
-                    $content= addslashes($_POST['content-post']);
-                    // Lien pour rajouter notre photo si il y en a une à rajouter
-                    if (isset($_POST["photo_link_post"])) {
-                        $photo_link2="photo_link_post";
-                        $_POST["photo_link_post"] = uploadPicture($photo_link2);
-                        if (!file_exists($_POST["photo_link_post"])) {
-                            $post= $pdo->prepare($createPostSQL);
-                            $post->bindValue(':photo_link_post', $_POST["photo_link_post"]);
-                            $post->bindValue(':content', $content);
-                            $post->execute();
-                        }
-                    } else {
-                        // Lien par défaut qui mène nulle part
+            if (isset($_POST["content-post"]) && trim($_POST["content-post"]) != "") {
+                // Gestion d'erreur pour les ""
+                $content= addslashes($_POST['content-post']);
+                // Lien pour rajouter une photo si il y en a une à rajouter
+                if (isset($_POST["upload_post_with_picture"]) && $_POST["upload_post_with_picture"] == "Poster !") {
+                    $photo_link2="photo_link_post";
+                    $_POST["photo_link_post"] = "aupif/url/photo.jpeg";
+                    if (isset($_FILES["photo_link_post"])) {
+                        $testImg = newUploadPicture($photo_link2);
+                        $_POST["photo_link_post"] = $testImg;
+                    } 
+                    if (!isset($testImg)) {
+                    //  Lien par défaut qui mène nulle part
                         $_POST["photo_link_post"] = "aupif/url/photo.jpeg";
                     }
-                    // Requete pour créer le poste
-                    echo var_dump($_FILES["$photo_link2"]);
+                // Requete pour créer le poste
+                $post= $pdo->prepare($createPostSQL);
+                $post->bindValue(':id_user', $userId_int);
+                $post->bindValue(':username', $username);
+                $post->bindValue(':photo_link_post', $_POST["photo_link_post"]);
+                $post->bindValue(':content', $content);
+                $post->execute();
                 }
             }
 }
+
+
 function showPosts($showPostSQL) {
     global $pdo, $username;
     //on affiche les post
@@ -257,11 +263,15 @@ function showPosts($showPostSQL) {
     while($allPost = $r2->fetch(PDO::FETCH_ASSOC)) {
         $profilePicture = $pdo->query("SELECT photo_link FROM user WHERE id_user = '$allPost[id_author]' ")->fetchColumn();
         ?><div class="container_post_single">
+            <div class=intelPoster> 
                 <a href="profile.php?profil=<?php echo $allPost['id_author'] ?>"><?php if ($allPost['author_username']==$username) { echo "Moi";} else { echo $allPost['author_username'];}?></a>
                 <img class="profil-picture" src="<?php echo $profilePicture;?>" alt="image de profil">
+            </div>       
                 <?php if($allPost['photo_link'] != "aupif/url/photo.jpeg"){ echo "<img class='image-post' src=".$allPost['photo_link']." alt='image du post'>"; } ?>
+            <div class="containerMsg">
                 <p><?php echo $allPost['content'];?></p>
-                <p><?php echo $allPost['date'];?></p>
+                <p class="datePost"><?php echo $allPost['date'];?></p>
+            </div> 
                 <?php 
                 comments($allPost['id_post']);
         echo "</div>";
@@ -306,4 +316,53 @@ function friendshipAccept($target, $refresh) {
     }
 }
 
+function newUploadPicture($picture) {
+    $message = ''; 
+
+  if (isset($_FILES[$picture]) && $_FILES[$picture]['error'] === UPLOAD_ERR_OK)
+  {
+    // get details of the uploaded file
+    $fileTmpPath = $_FILES[$picture]['tmp_name'];
+    $fileName = $_FILES[$picture]['name'];
+    $fileSize = $_FILES[$picture]['size'];
+    $fileType = $_FILES[$picture]['type'];
+    $fileNameCmps = explode(".", $fileName);
+    $fileExtension = strtolower(end($fileNameCmps));
+ 
+    // sanitize file-name
+    $newFileName = md5(time() . $fileName) . '.' . $fileExtension;
+ 
+    // check if file has one of the following extensions
+    $allowedfileExtensions = array('jpg', 'gif', 'png', 'zip', 'txt', 'xls', 'doc');
+ 
+    if (in_array($fileExtension, $allowedfileExtensions))
+    {
+      // directory in which the uploaded file will be moved
+      $uploadFileDir = './images/';
+      $dest_path = $uploadFileDir . $newFileName;
+ 
+      if(move_uploaded_file($fileTmpPath, $dest_path)) 
+      {
+        $message ='File is successfully uploaded.';
+      }
+      else
+      {
+        $message = 'There was some error moving the file to upload directory. Please make sure the upload directory is writable by web server.';
+      }
+    }
+    else
+    {
+      $message = 'Upload failed. Allowed file types: ' . implode(',', $allowedfileExtensions);
+    }
+  }
+  else
+  {
+    $message = 'There is some error in the file upload. Please check the following error.<br>';
+    $message .= 'Error:' . $_FILES[$picture]['error'];
+  }
+  $_SESSION['message'] = $message;
+  if (isset($dest_path)) {
+    return $dest_path;
+  }
+}
 ?>

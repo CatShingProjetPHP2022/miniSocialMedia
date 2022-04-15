@@ -1,10 +1,12 @@
-
+button:hover, input:hover {
+	cursor: pointer;
+}
 /*inscription & connexion oumi*/
 
 @import url('https://fonts.googleapis.com/css?family=Montserrat:400,800');
 
-* {
-	box-sizing: border-box;
+html{
+	overflow-x: hidden;
 }
 
 .wrapper{
@@ -54,14 +56,12 @@ button {
 	text-align: center;
 }
 
-.input {
-	background-color: #eee;
-	border: none;
+.user_info_fields {
+	border: solid 1px lightgray;
 	padding: 12px 15px;
 	margin: 8px 0;
 	width: 100%;
 }
-
 .container {
 	background-color: #fff;
 	border-radius: 10px;
@@ -98,9 +98,9 @@ button {
 	width: 50%;
 	z-index: 2;
 }
-input[type=file]{
+ .choose_pp{
     display: none;
-}
+} 
 label{
     border-radius: 20px;
     border: 1px solid #FF4B2B;
@@ -122,8 +122,11 @@ form > label {
 	height: 100%;
 	overflow: hidden;
 	z-index: 100;
-    background-image: url('images/assets/AdobeStock_338147710.jpeg');
-    background-size: cover;
+}
+.img-container > img {
+	height: 100%;
+	width: 100%;
+	object-fit:cover;
 }
 .cat_img {
 	color: #FFFFFF;
@@ -138,8 +141,14 @@ form > label {
 	left: 50%;
 	width: 50%;
 	height: 100%;
-    background-image: url('images/AdobeStock_401755189.jpeg');
-    background-size: cover;
+    /* background-image: url('/images/assets/AdobeStock_401755189.jpeg');
+    background-size: cover; */
+}
+
+.img-container_signup > img {
+	height: 100%;
+	width: 100%;
+	object-fit: cover;
 }
 
 .social-container {
@@ -154,51 +163,388 @@ form > label {
 	height: 40px;
 	width: 40px;
 }
+.connection_form input {
+	margin-bottom: 18px
+}
 
 /*inscription & connexion oumi*/
 
 
-/*connection oumi*/
+
+
+/*home thomas*/
+li {
+    list-style: none;
+}
+
+header {
+    height: 10vh;
+    display: flex;
+    justify-content: space-around;
+}
+
+    header > img {
+        height: 100%;
+        object-fit: contain;
+    }
+
+    
+    nav {
+        width: 40%;
+        display: flex;
+        justify-content: space-evenly;
+        align-items: center;
+    }
+
+
+.main {
+    width: 100vw;
+    height: auto;
+    display: flex;
+    flex-direction: row-reverse;
+    justify-content: center;
+	margin: 0 0 0 0 ;
+	z-index: 5;
+}
+
+.add_new_post{
+	position: absolute;
+	top: 15%;
+	left: 3%;
+	width: 120px;
+	height: 160px;
+	font-size: 1rem;
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	background-color: rgb(246, 246, 246);
+	border: 3px solid ;
+	box-shadow: 5px 5px 2px rgb(8, 174, 215);
+	color: rgb(11, 32, 37);
+	font-weight: 400;
+	transition: all 0.5s ease-in-out;
+}
+.add_new_post:hover{
+	box-shadow: 0px 0px 0px rgba(27,27,27,0);
+	transform: rotate(-90deg);
+	
+}
+.add_new_post:hover > p {
+	color: rgb(8, 174, 215);
+	font-size: 1.2rem;
+	transform: rotate(90deg);
+}
+.add_new_post > p::after{
+	content: '';
+    display: block;
+    width: 0;
+    height: 4px;
+	background-color: rgb(219, 100, 219);
+    transition: all .55s .3s;
+}
+.add_new_post:hover > p::after{
+	width: 100%;
+	background: rgba(8, 174, 215);
+}
+
+.form-create-post{
+	position: fixed;
+	top: 0;
+	left: 0;
+	width: 2000px;
+	height: 2000px;
+	background-color: rgba(27,27,27,0.9);
+	display: flex;
+	justify-content: center;
+	align-items: center;
+	z-index: 20;
+
+}
+.postOff{
+	display: none;
+}
+.containerCreatePost{
+	position: absolute;
+	top: 8%;
+	left: 28%;
+	display: flex;
+	flex-direction: column-reverse;
+	justify-content: space-around;
+	align-items: center;
+	width: 400px;
+	height: 500px;
+	background-color: #eee;
+}
+.containerCreatePost > *{
+	z-index: 50;
+	background-color: #dddddd;
+	color: rgb(5, 25, 25);
+}
+
+.container-friends{
+	width: 15vw;
+	height: auto;
+	margin-left: 30px;
+	display: flex;
+	flex-direction: column;
+	gap: 5px;
+}
+.single-friends{
+	width: 100%;
+	padding: 4px;
+	margin-left: 80px;
+	height: auto;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+	justify-content: flex-end;
+	gap: 0.8vh;
+	box-shadow: 1px 0px 5px grey;
+	transition: all 0.3s ease-in;
+	border-radius: 20px;
+}
+
+.single-friends > p {
+	font-size: 0.9rem;
+}
+
+.single-friends:hover{
+	box-shadow: 1px 0px 8px rgb(61, 200, 250);
+}
+
+.container-allPost{
+	width: 60%;
+	height: auto;
+	display: flex;
+	flex-direction: column;
+	gap: 40px;
+}
+.container_post_single{
+	width: 80%;
+	max-width: 500px;
+	height: auto;
+	display: flex;
+	flex-direction: column;
+	border-radius: 10px;
+	margin-left: 100px;
+}
+.container-all-comments {
+	width: 100%;
+	height: auto;
+	margin-top: 50px;
+	background-color:lightblue;
+}
+.intelPoster{
+	width: 100%;
+	height: auto;
+	display: flex;
+	flex-direction: row-reverse;
+	justify-content: space-between;
+} 
+
+
+.image-post{
+width: 100%;
+height: auto;
+
+}
+.containerMsg{
+	width: 80%;
+	height: auto;
+	display: flex;
+	flex-direction: column;
+	/* le new post faut qu'il s'affiche pour le profile quand */
+}
+/* .add_new_post > p {
+	color: rgb(11, 32, 37);
+	
+} */
 
 
 
+    .results-display {
+        display: none;
+    }
 
-/*connection oumi*/
+    
 
+    .container_post_single {
+        margin-bottom: 30px;
+        box-shadow: 1px 1px 7px black;
+        padding: 10px;
+        width: 60vw;
+    }
 
+        .profil-picture {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+
+        .container-all-comments {
+            background-color: rgb(87, 85, 85);
+            padding: 5px;
+			display: flex;
+			flex-direction: column;
+			position:relative;
+        }
+		.form-add-comment{
+			padding-top: 20px;
+			padding-bottom: 37px;
+		}
+		.form-add-comment > input[type="text"]{
+			width: 70%;
+			height: 40px;
+			outline: none;
+			border :1px solid white;
+			border-radius: 12px;
+			font-size: 1rem;
+			color: black;
+			font-style: normal;
+			font-weight: 500;
+			margin-left: 40px;
+		}
+		.form-add-comment > input[type="submit"]{
+			width:43px;
+			height:43px;
+			border-radius: 50%;
+			background-color: rgb(17, 160, 196);
+			color: #FFFFFF;
+			outline: none;
+
+		}
+		.form-add-comment > input[type="submit"]:hover{
+			background-color: rgb(27, 191, 232);
+		}
+        .container_comment_single{
+            margin-bottom: 15px;
+            padding: 5px;
+			color:#FFFFFF;
+			
+			
+            }
+		.espace_commentaire{
+			position: absolute;
+			top: 1px;
+			right: 0;
+			color: rgb(250, 250, 250);
+			background-color:rgb(87, 85, 85);
+			width: 150px;
+			height: auto;
+			z-index: 10;
+			
+		}
+.search-result {
+    height: 10vh;
+    display: flex;
+    justify-content: space-evenly;
+}
+
+    .search-result > img {
+        height: 100%;
+        object-fit: contain;
+    }
+
+.profile-wrapper {
+	background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 14px 28px rgb(0 0 0 / 25%), 0 10px 10px rgb(0 0 0 / 22%);
+    width: 45%;
+    max-width: 100%;
+    min-height: 350px;
+	display:flex;
+	margin:auto;
+	border:groove;
+}
+.profile-container {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    height: 30vh;
+    width: 40vw;
+	border: groove;
+	margin: auto;
+	border-radius: 6%;
+}
+.search-button{
+		background: slategrey;
+		color: white
+}
+    .profile-container > img {
+        height: 50%;
+        object-fit: cover;
+    }
+
+    .signup_form {
+        display: flex;
+        width: fit-content;
+        flex-flow: column wrap;
+        margin: auto;
+    }
+    .signup_form div {
+        display: block;
+        padding: 15px;
+        justify-content: center;
+    }
+    .signup_form_wrapper{
+        display: flex;
+        line-height: 30px;
+      }
+    
+    .signup_form label {
+            gap: 10px;
+            display: block;
+    }
+    
+    hr{
+        width: 100%;
+        margin-top: 10px;
+    }
+    
+    
+    .conditions {
+        display: flex ;
+        gap: 17px
+    }
+    .already_in_container{
+        display: flex ;
+        margin: auto;
+        padding: 3px;
+        width:fit-content;
+        flex-flow: column wrap;
+    }
+    .already_in_button {
+        display: flex;
+        margin: auto;
+    }
+    
+    .signup_button {
+        display: flex;
+        width: max-content;
+    }
+	.not_already_in {
+		margin-block: 15px;
+		color: lightslategrey;
+	}
+    
 
 /*home thomas*/
 
 
 
 
-/*home thomas*/
 
 
 
-
-/*home popup thomas oumi*/
-
-
-
-
-/*home popup thomas oumi*/
-
-/*post picture thomas*/
-
-
-
-
-/*post picture thomas*/
 
 /*message thomas*/
 .messagerie{
     width: 100vw;
     height: 86vh;
-    display:100lex;
+    display: flex;
     flex-direction: column;
 }
-
 
 .titleMessagerie{
     width: 100vw;
@@ -208,14 +554,89 @@ form > label {
     width: 100vw;
     height:80vh;
     display: flex;
+	flex-direction: row;
+	position: relative;
+}
+.champsFriendslist{
+	width: 25%;
+	height: 400px;
+	overflow-y: auto;
+	display: flex;
+	flex-direction: column;
+	margin: 0;
 
 }
+.conversation{
+	position: absolute;
+	top: 150px;
+	right: 20px;
+	width: 75%;
+	height: 400px;
+	overflow-y: auto;
+	display: flex;
 
-    .champsFriends{
-        
-    }.champEnvoi{
-    width: 100vw;
-    height:14vh;
+}
+.champMsgSender{
+	width: 50%;
+	height: 100%;
+	overflow-y: auto;
+}
+.champMsgReceive{
+	width: 50%;
+	height: 100%;
+	overflow-y: auto;
+}
+.champMsgSender > p{
+	width: auto;
+	height: auto;
+	background-color: rgb(133, 216, 78);
+	color:#fff;
+	border : 1px solid black;
+	border-radius: 12px;
+	padding-bottom: 20px;
+} 
+.champMsgReceive > p{
+	width:auto;
+	height: auto;
+	background-color: rgb(78, 216, 200);
+	color:#fff;
+	border : 1px solid black;
+	border-radius: 12px;
+	padding-bottom: 20px;
+} 
+.champEnvoi{
+	position: fixed;
+	bottom: 0;
+	width: 100%;
+	height:14vh;
+	background-color: rgb(87, 85, 85);
+	padding-top: 30px;
+	padding-bottom: 20px;
+}
+
+.form-add-message > input[type="text"]{
+	
+	width: 70%;
+	height: 40px;
+	outline: none;
+	border :1px solid white;
+	border-radius: 12px;
+	font-size: 1rem;
+	color: black;
+	font-style: normal;
+	font-weight: 500;
+	margin-left: 40px;
+}
+.form-add-message > input[type="submit"]{
+	width:43px;
+	height:43px;
+	border-radius: 50%;
+	background-color: rgb(17, 160, 196);
+	color: #FFFFFF;
+	outline: none;
+}
+.form-add-message > input[type="submit"]:hover{
+	background-color: rgb(27, 191, 232);
 }
 
 
@@ -286,6 +707,7 @@ gap: 40px;
 	align-items: center;
 	margin:auto;
 	gap: 12.5rem
+	
 }
 .icons {
 	display: flex;
@@ -299,6 +721,7 @@ gap: 40px;
 	flex-flow: row nowrap;
 	gap : .3125rem
 }
+
 .search-bar:first-child {
 	width: 9.375rem
 }
@@ -321,11 +744,31 @@ gap: 40px;
 	font-family: 'Damion', cursive;
 	font-size: 1.5625rem
 }
+.logo-container a {
+	text-decoration: none;
+	color:black;
+}
 /*header oumi*/
 
 /* SECTION MEDIA QUERIES*/
 @media (max-width: 500px){
 	.search-bar{
 		display: none;
+	}
+	.container-all-comments{
+		width: 80px;
+		height: 70px;
+	}
+	.espace_commentaire{
+		display: none !important;
+	}
+	.form-add-comment{
+		flex-direction: row-reverse;
+	}
+	.add_new_post{
+		display:none !important;
+	}
+	.logo-container > span{
+		display: none !important;
 	}
 }/*SECTION MEDIA QUERIES*/

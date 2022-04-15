@@ -1,0 +1,38 @@
+.sign_in_form {
+    display: flex;
+    width: fit-content;
+    flex-flow: column wrap;
+    margin: auto;
+}
+.sign_in_form div {
+    display: block;
+    padding: 15px;
+    justify-content: center;
+}
+
+.sign_in_form label {
+        gap: 10px;
+        display: block;
+}
+
+.sign_me_in{
+    display: flex !important;
+    margin: auto;
+    padding: 3px;
+    width:fit-content;
+    flex-flow: column wrap;
+}
+.already_in_button {
+    display: flex;
+    margin: auto;
+}
+
+button {
+    display: flex;
+    margin: auto;
+    width: max-content;
+}
+
+.not_already_in{
+    margin: auto;
+}

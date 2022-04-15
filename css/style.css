@@ -10,10 +10,9 @@
     display: block;
     transition: 1s;
 } */
-li {
+/* li {
     list-style: none;
 }
-
 
 header {
     height: 10vh;
@@ -43,8 +42,12 @@ header {
 
 
 .main {
+    width: 80vw;
+    height: auto;
     display: flex;
     flex-direction: row-reverse;
+    justify-content: center;
+    gap: 2rem;
 }
 
     .results-display {
@@ -134,11 +137,11 @@ header {
     
     
     .conditions {
-        display: flex !important;
+        display: flex ;
         gap: 17px
     }
     .already_in_container{
-        display: flex !important;
+        display: flex ;
         margin: auto;
         padding: 3px;
         width:fit-content;
@@ -157,4 +160,4 @@ header {
     
     .already_in{
         margin: auto;
-    }
+    } */

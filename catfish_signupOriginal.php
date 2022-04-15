@@ -50,7 +50,7 @@ if ($_POST) {
         $photo_link="photo_link";
         $_POST["photo_link"] = uploadPicture($photo_link);
         if (!file_exists($_POST["photo_link"])) {
-            $erreur .= '<p>'.$_SESSION['message'].'</p>';
+            $erreur .= "<p>Fichier non uploadé</p>";
         }        
     }
 
@@ -71,50 +71,56 @@ if ($_POST) {
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="css/stylefinal.css">
     <link rel="stylesheet" href="css/reset.css">
+    <link rel="stylesheet" href="css/stylefinal.css">
     <title>Inscription</title>
 </head>
 
-<body class="wrapper">
-  
-<div class="signup_wrapper" id="container">
-	
-	<div class="form-container sign-up-container">
-		<form method="post" class="signup_form" enctype="multipart/form-data">
-			<h1 class="connection">Inscription</h1>
-	
-            <input type="text" name="username" placeholder="Identifiant" class="open_folder user_info_fields"/>
-            <input type="email" name="email" placeholder="Email" class="input user_info_fields"/>
-			<input type="password" name="password" placeholder="Mot de passe" class="input user_info_fields"/>
-            <label for="photo_link" style="margin-block:15px; background-color: #ff806a;">
-               Choisir une photo
-            <input type="file" id="photo_link" name="photo_link" accept="image/png, image/jpg, image/jpeg" class="input"/>
-           </label>
-			<button>S'inscrire</button>
-            
-            <a href="signup_catfish.php" class="already_in">Déjà Inscrit ?</a>
-            <button style="margin-bottom:15px;">Connexion</button>
-            <span>S'inscrire avec </span>
-            <div class="social-container">
-				<a href="#" class="social" class="link">
-                    <img src="images/assets/icons8-twitter.svg" alt="twitter">
-                </a>
-				<a href="#" class="social"class="link">
-                <img src="images/assets/icons8-google.svg" alt="google">
-                </a>
-				<a href="#" class="social" class="link">
-                <img src="images/assets/icons8-facebook.svg" alt="fb">
-                </a>
-			</div>
-            <?php echo $content ?>
-		</form>
-	</div>
-	<div class="img-container_signup">
-        <img src="images/assets/AdobeStock_338147710.jpeg" alt="cat_image">
-	</div>
-</div>
+<body>
 
+    <section class="signup_form_wrapper">
+        <form method="post" class="signup_form" enctype="multipart/form-data">
+
+            <div class="username">
+                <label for="username" placeholder="@example"><b>Nom d'utilisateur</b></label>
+                <input type="text" name="username" required>
+            </div>
+
+
+            <div class="password">
+                <label for="password" placeholder="Mot de passe"><b>Mot de passe</b></label>
+                <input type="password" name="password" required>
+            </div>
+
+            <div class="profile_picture">
+                <label for="photo_link"><b>Photo de profil</b></label>
+                <p>Selectionnez une photo</p>
+                <input type="file" name="photo_link" required class="choose_pp">
+                <!-- Il faut créer un dossier pour stocker la photo puis mettre l'adresse de la photo dans $_POST['photo-link']; -->
+            </div>
+
+            <div class="email">
+                <label for="email" placeholder="example@email.com"><b>Email</b></label>
+                <input type="email" name="email" required>
+            </div>
+
+            <div class="conditions">
+                <input type="checkbox" checked required  value="ok" name="conditions" id="signup_checkbox">
+                <label for="conditions">J'accepte les conditions générales d'utilisation</label>
+            </div>
+
+            <button type="submit">S'INSCRIRE</button>
+
+            <hr>
+            <div class="already_in_container">
+                <span class="already_in">Déja inscrit ?</span>
+                <div class="button_container">
+                    <button type="submit"><a href="connection.php" style="text-decoration:none; color:black">SE CONNECTER</a></button>
+                </div>
+            </div>
+            <?php echo $content ?>
+    </section>
+    </form>
 </body>
 
 </html>

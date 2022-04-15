@@ -20,17 +20,12 @@ $username = $_SESSION['user']['username'];
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Messages</title>
-    <link rel="stylesheet" href="css/reset.css">
-    <link rel="stylesheet" href="css/message.css">
-    <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="css/stylefinal.css">
 </head>
 <body>
 <?php getNav(); ?>
 <section class ="messagerie">
-    <div class="titleMessagerie">
-        <h1><?php echo $username?></h1>
-    </div>
+    
     <div class="containerMessagerie">
         
         <div class = "champsFriends">
@@ -111,7 +106,3 @@ $username = $_SESSION['user']['username'];
 </section>    
 </body>
 </html>
-
-
-
-

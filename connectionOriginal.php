@@ -51,41 +51,46 @@ if (isset($_SESSION["user"])) {
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="css/reset.css">
-    
     <link rel="stylesheet" href="css/stylefinal.css">
+    
     <title>Connexion</title>
 </head>
 
-<body class="wrapper">
-<div class="container" id="container">
-	
-	<div class="form-container sign-in-container">
-		<form method="post" class="connection_form">
-			<h1 class="connection">Connexion</h1>
-			<div class="social-container">
-            <a href="#" class="social" class="link">
-                    <img src="images/assets/icons8-twitter.svg" alt="twitter">
-                </a>
-				<a href="signin_google.php" class="social" class="link">
-                <img src="images/assets/icons8-google.svg" alt="google">
-                </a>
-				<a href="#" class="social" class="link">
-                <img src="images/assets/icons8-facebook.svg" alt="fb">
-                </a>
-			</div>
-			<input type="email" name="email" placeholder="Email" />
-			<input type="password" name="password" placeholder="Mot de passe" />
-			<button type="submit" class="connection">Connexion</button>
-		
-            <span class="not_already_in">Pas encore Inscrit ?</span>
-            <button style="margin-bottom:15px;" class="signup_button"><a href="catfish_signup.php" style="text-decoration:none;color:white">Inscrivez-vous</a></button>
-        </form>
-	</div>
-	<div class="img-container">
-        <img src="images/assets/AdobeStock_401755189.jpeg" alt="">
-	</div>
-</div>
-    
+<body>
+<section>
+    <form method="post" class="sign_in_form">
+
+            <div class="username">
+                <label for="email" placeholder="@example"><b>Votre email</b></label>
+                <input type="text" name="email" required>
+            </div>
+
+
+            <div class="password">
+                <label for="password" placeholder="Mot de passe"><b>Mot de passe</b></label>
+                <input type="password" name="password" required>
+            </div>
+            <div>
+                <button type="submit">SE CONNECTER</button>
+            </div>
+            <?php echo $content ?>
+        </section>
+
+        <section>
+            <div class="">
+                <p>Ou connectez vous avec</p>
+                <img src="" alt="">
+                <img src="" alt="">
+                <img src="" alt="">
+            </div>
+        </section>
+        <div class="sign_me_in">
+                <span class="not_already_in">Pas encore inscrit ?</span>
+                <div class="button_container">
+                    <button type="submit"><a href="catfish_signup.php" style="text-decoration:none; color:black">S'INSCRIRE</a></button>
+                </div>
+            </div>
+    </form>
 </body>
 
 </html>
