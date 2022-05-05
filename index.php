@@ -43,9 +43,9 @@ $username = $_SESSION['user']['username'];
             </div>
         </form>
     <script>
-        let newPost = document.getElementById("app_new_post");
+        let newPost = document.getElementById("add_new_post");
         let postInterface = document.getElementById("form_post");
-        let formPost = document.getElementById("app-posting");
+        let formPost = document.getElementById("add-posting");
         newPost.addEventListener("click",()=>{
             postInterface.classList.remove("postOff");
         })
@@ -53,6 +53,7 @@ $username = $_SESSION['user']['username'];
             
             postInterface.classList.add("postOff");
         })
+    
 
     </script>
     <div class="main">
